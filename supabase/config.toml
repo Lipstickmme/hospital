@@ -1,1 +1,7 @@
 project_id = "eprmuhoucmlrvyyvsaqx"
+
+# Anonymous sign-in is what lets the chat widget open a conversation
+# without an account. RLS pins each row to the visitor's auth.uid(),
+# so an anonymous session cannot read anyone else's chat.
+[auth]
+enable_anonymous_sign_ins = true

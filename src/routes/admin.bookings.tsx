@@ -1,15 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { CalendarClock, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
-import { listBookings, setBookingStatus } from "@/lib/admin.functions";
 
 type BookingStatus = "new" | "confirmed" | "cancelled" | "completed";
 
-type BookingRow = {
+type Booking = {
   id: string;
   status: BookingStatus;
   patient_name: string;
@@ -34,24 +31,21 @@ export const Route = createFileRoute("/admin/bookings")({
 });
 
 function AdminBookingsPage() {
-  const listFn = useServerFn(listBookings);
-  const statusFn = useServerFn(setBookingStatus);
-
-  const [bookings, setBookings] = useState<BookingRow[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    try {
-      const data = await listFn({});
-      setBookings(data as BookingRow[]);
-    } catch (error) {
-      console.error("Failed to load bookings", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [listFn]);
+    const { data, error: loadError } = await supabase
+      .from("bookings")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (loadError) setError(loadError.message);
+    else setBookings((data as Booking[]) ?? []);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     void refresh();
@@ -79,22 +73,20 @@ function AdminBookingsPage() {
 
   async function onStatus(id: string, status: BookingStatus) {
     setBusyId(id);
-    try {
-      await statusFn({ data: { id, status } });
-      await refresh();
-      toast.success(`Marked ${status}`);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not update booking");
-    } finally {
-      setBusyId(null);
-    }
+    const { error: updateError } = await supabase
+      .from("bookings")
+      .update({ status })
+      .eq("id", id);
+    if (updateError) setError(updateError.message);
+    await refresh();
+    setBusyId(null);
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Appointment bookings</h2>
+          <h1 className="text-2xl font-semibold">Appointment bookings</h1>
           <p className="text-xs text-muted-foreground">
             {filtered.length} of {bookings.length} shown
           </p>
@@ -114,6 +106,12 @@ function AdminBookingsPage() {
           ))}
         </div>
       </div>
+
+      {error && (
+        <p role="alert" className="mb-4 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm">
+          {error}
+        </p>
+      )}
 
       <div className="glass overflow-x-auto rounded-3xl">
         <table className="w-full min-w-[720px] text-left text-sm">
@@ -188,7 +186,7 @@ function AdminBookingsPage() {
           </tbody>
         </table>
       </div>
-    </main>
+    </div>
   );
 }
 

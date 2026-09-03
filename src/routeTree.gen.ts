@@ -12,10 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ChatTokenRouteImport } from './routes/chat.$token'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
+import { Route as AdminChatRouteImport } from './routes/admin.chat'
+import { Route as AdminEmailRouteImport } from './routes/admin.email'
 import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
 
 const IndexRoute = IndexRouteImport.update({
@@ -33,11 +33,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatTokenRoute = ChatTokenRouteImport.update({
-  id: '/chat/$token',
-  path: '/chat/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -48,9 +43,14 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminMessagesRoute = AdminMessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
+const AdminChatRoute = AdminChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmailRoute = AdminEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBookingsRoute = AdminBookingsRouteImport.update({
@@ -59,23 +59,37 @@ const AdminBookingsRoute = AdminBookingsRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 
+export interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminChatRoute: typeof AdminChatRoute
+  AdminEmailRoute: typeof AdminEmailRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
+}
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminChatRoute: AdminChatRoute,
+  AdminEmailRoute: AdminEmailRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
+}
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/chat/$token': typeof ChatTokenRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/': typeof AdminIndexRoute
-  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/chat': typeof AdminChatRoute
+  '/admin/email': typeof AdminEmailRoute
   '/admin/bookings': typeof AdminBookingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/chat/$token': typeof ChatTokenRoute
   '/admin': typeof AdminIndexRoute
-  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/chat': typeof AdminChatRoute
+  '/admin/email': typeof AdminEmailRoute
   '/admin/bookings': typeof AdminBookingsRoute
 }
 export interface FileRoutesById {
@@ -83,10 +97,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/chat/$token': typeof ChatTokenRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/': typeof AdminIndexRoute
-  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/chat': typeof AdminChatRoute
+  '/admin/email': typeof AdminEmailRoute
   '/admin/bookings': typeof AdminBookingsRoute
 }
 export interface FileRouteTypes {
@@ -95,49 +109,37 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
-    | '/chat/$token'
     | '/admin'
     | '/admin/'
-    | '/admin/messages'
+    | '/admin/chat'
+    | '/admin/email'
     | '/admin/bookings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/contact'
-    | '/chat/$token'
     | '/admin'
-    | '/admin/messages'
+    | '/admin/chat'
+    | '/admin/email'
     | '/admin/bookings'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/contact'
-    | '/chat/$token'
     | '/admin'
     | '/admin/'
-    | '/admin/messages'
+    | '/admin/chat'
+    | '/admin/email'
     | '/admin/bookings'
   fileRoutesById: FileRoutesById
 }
-export interface AdminRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminMessagesRoute: typeof AdminMessagesRoute
-  AdminBookingsRoute: typeof AdminBookingsRoute
-}
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminIndexRoute: AdminIndexRoute,
-  AdminMessagesRoute: AdminMessagesRoute,
-  AdminBookingsRoute: AdminBookingsRoute,
-}
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
-  ChatTokenRoute: typeof ChatTokenRoute
   AdminRoute: typeof AdminRouteWithChildren
 }
 
@@ -164,13 +166,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chat/$token': {
-      id: '/chat/$token'
-      path: '/chat/$token'
-      fullPath: '/chat/$token'
-      preLoaderRoute: typeof ChatTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -185,11 +180,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/messages': {
-      id: '/admin/messages'
-      path: '/messages'
-      fullPath: '/admin/messages'
-      preLoaderRoute: typeof AdminMessagesRouteImport
+    '/admin/chat': {
+      id: '/admin/chat'
+      path: '/chat'
+      fullPath: '/admin/chat'
+      preLoaderRoute: typeof AdminChatRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/email': {
+      id: '/admin/email'
+      path: '/email'
+      fullPath: '/admin/email'
+      preLoaderRoute: typeof AdminEmailRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/bookings': {
@@ -206,7 +208,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
-  ChatTokenRoute: ChatTokenRoute,
   AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
