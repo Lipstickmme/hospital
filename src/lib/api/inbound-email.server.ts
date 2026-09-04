@@ -200,7 +200,7 @@ export async function handleInboundEmail(request: Request): Promise<Response> {
       stage: "store",
       detail: message.slice(0, 300),
       hint: /relation .* does not exist/i.test(message)
-        ? "The email tables are missing. Run drizzle/migrations/0001_align_messaging_backend.sql."
+        ? "The email tables are missing. Run supabase/migrations/0002_email.sql."
         : "Check the Supabase service role key and that the migration has run.",
     });
   }

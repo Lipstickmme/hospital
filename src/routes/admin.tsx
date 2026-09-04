@@ -54,7 +54,7 @@ function AdminLayout() {
   if (!user) return <AdminLogin />;
   if (!isAdmin) {
     return (
-      <AdminLogin notice="That account is not on the admin list. Ask an admin to add its user id to the admins table (user_roles), or sign in with a different account." />
+      <AdminLogin notice="That account is not on the admin list. Add it by running supabase/grant-admin.sql with this address, or sign in with a different account." />
     );
   }
 

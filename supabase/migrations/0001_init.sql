@@ -1,23 +1,29 @@
--- Align the messaging backend with the construction-repo shape:
---   * an `admins` view over user_roles + a security-definer `is_admin()` fn
---   * a shared `item_status` enum ('new', 'in_progress', 'closed')
---   * a form inbox table (`enquiries`) written only via the service role
---   * anon-owned live chat tables (`chat_sessions`, `chat_messages`) with RLS
---     that scopes rows to the visitor's `auth.uid()`
---   * an admin-only email inbox (`email_threads`, `email_messages`) fed by
---     the Resend inbound webhook
+-- Lifewell Medical Center backend schema.
 --
--- The 0000 migration's `conversations` and `conversation_messages` tables
--- are left in place so nothing already stored is lost; the new code writes
--- against the new tables only.
+-- Safe to run more than once: every statement is guarded, so re-running the
+-- file after an edit updates what changed rather than erroring half way.
 --
--- Safe to re-run.
+-- Five tables: two form inboxes (enquiries, bookings) and a two-table live
+-- chat, plus the admin list. Everything is behind row level security; the only
+-- writes the browser can make directly are a visitor creating their own chat
+-- session and posting into it. Form submissions never touch the database from
+-- the browser at all — they go through the `submitForm` server function, which
+-- holds the service role key and also sends the notification email.
 
 -- ---------------------------------------------------------------------------
--- Admin identity: is_admin() bridges to the existing user_roles table so a
--- single 'admin' or 'staff' role still gates everything.
+-- Admins
 -- ---------------------------------------------------------------------------
 
+create table if not exists public.admins (
+  user_id    uuid primary key references auth.users (id) on delete cascade,
+  email      text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.admins enable row level security;
+
+-- SECURITY DEFINER so the check itself is not subject to RLS on `admins`,
+-- which would otherwise recurse when used inside the policies below.
 create or replace function public.is_admin()
 returns boolean
 language sql
@@ -25,21 +31,14 @@ stable
 security definer
 set search_path = public
 as $$
-  select exists (
-    select 1
-      from public.user_roles
-     where user_id = auth.uid()
-       and role in ('admin', 'staff')
-  );
+  select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
 
--- A parity view so code copied from the construction repo compiles unchanged.
-create or replace view public.admins as
-  select user_id, created_at
-    from public.user_roles
-   where role in ('admin', 'staff');
-
-grant select on public.admins to authenticated;
+drop policy if exists "admins read own row" on public.admins;
+create policy "admins read own row"
+  on public.admins for select
+  to authenticated
+  using (user_id = auth.uid());
 
 -- ---------------------------------------------------------------------------
 -- Shared triage status
@@ -54,7 +53,7 @@ end
 $$;
 
 -- ---------------------------------------------------------------------------
--- Contact enquiries (form inbox, service-role only writes)
+-- Contact enquiries
 -- ---------------------------------------------------------------------------
 
 create table if not exists public.enquiries (
@@ -75,6 +74,8 @@ create index if not exists enquiries_created_at_idx
 
 alter table public.enquiries enable row level security;
 
+-- No anon policy at all: inserts arrive via the server function's service
+-- role, which bypasses RLS. Only signed-in admins can read or triage.
 drop policy if exists "admins read enquiries" on public.enquiries;
 create policy "admins read enquiries"
   on public.enquiries for select to authenticated using (public.is_admin());
@@ -85,9 +86,53 @@ create policy "admins update enquiries"
   using (public.is_admin()) with check (public.is_admin());
 
 -- ---------------------------------------------------------------------------
--- Live chat: anon auth + RLS keeps each visitor to their own thread
+-- Appointment bookings
 -- ---------------------------------------------------------------------------
 
+do $$
+begin
+  if not exists (select 1 from pg_type where typname = 'booking_status') then
+    create type public.booking_status as enum
+      ('new', 'confirmed', 'cancelled', 'completed');
+  end if;
+end
+$$;
+
+create table if not exists public.bookings (
+  id             uuid primary key default gen_random_uuid(),
+  created_at     timestamptz not null default now(),
+  status         public.booking_status not null default 'new',
+  patient_name   text not null,
+  email          text not null,
+  phone          text not null,
+  service        text not null,
+  preferred_date date not null,
+  preferred_time text not null,
+  notes          text
+);
+
+create index if not exists bookings_created_at_idx
+  on public.bookings (created_at desc);
+
+alter table public.bookings enable row level security;
+
+drop policy if exists "admins read bookings" on public.bookings;
+create policy "admins read bookings"
+  on public.bookings for select to authenticated using (public.is_admin());
+
+drop policy if exists "admins update bookings" on public.bookings;
+create policy "admins update bookings"
+  on public.bookings for update to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+
+-- ---------------------------------------------------------------------------
+-- Live chat
+-- ---------------------------------------------------------------------------
+
+-- `visitor_id` is the anonymous auth uid the widget signs in with, so a
+-- visitor can read their own thread and nobody else's without us inventing a
+-- token scheme of our own. Requires anonymous sign-ins to be enabled under
+-- Authentication → Providers → Anonymous.
 create table if not exists public.chat_sessions (
   id              uuid primary key default gen_random_uuid(),
   created_at      timestamptz not null default now(),
@@ -162,6 +207,7 @@ create policy "visitor or admin reads messages"
     )
   );
 
+-- Keep the inbox ordered by activity without the client having to maintain it.
 create or replace function public.touch_chat_session()
 returns trigger
 language plpgsql
@@ -171,9 +217,10 @@ as $$
 begin
   update public.chat_sessions
      set last_message_at = new.created_at,
-         -- A visitor speaking puts the session back on the waiting pile even
-         -- if it had been answered or closed. An agent reply leaves the
-         -- status alone; the dashboard sets it to in_progress itself.
+         -- A visitor speaking puts the conversation back on the waiting pile,
+         -- including one already answered or closed, so a follow-up cannot go
+         -- unnoticed. An agent reply leaves the status alone; the dashboard
+         -- sets it to in_progress itself.
          status = case when new.sender = 'visitor' then 'new' else status end
    where id = new.session_id;
   return new;
@@ -185,89 +232,9 @@ create trigger chat_messages_touch_session
   after insert on public.chat_messages
   for each row execute function public.touch_chat_session();
 
--- ---------------------------------------------------------------------------
--- Email inbox (Resend inbound webhook + admin replies)
--- ---------------------------------------------------------------------------
-
-create table if not exists public.email_threads (
-  id                uuid primary key default gen_random_uuid(),
-  created_at        timestamptz not null default now(),
-  last_message_at   timestamptz not null default now(),
-  subject           text not null default '(no subject)',
-  participant_email text not null,
-  participant_name  text,
-  status            public.item_status not null default 'new'
-);
-
-create index if not exists email_threads_activity_idx
-  on public.email_threads (last_message_at desc);
-
-create index if not exists email_threads_match_idx
-  on public.email_threads (lower(participant_email), lower(subject));
-
-create table if not exists public.email_messages (
-  id              uuid primary key default gen_random_uuid(),
-  created_at      timestamptz not null default now(),
-  thread_id       uuid not null references public.email_threads (id) on delete cascade,
-  direction       text not null check (direction in ('inbound', 'outbound')),
-  from_email      text not null,
-  from_name       text,
-  to_email        text not null,
-  subject         text,
-  body_text       text,
-  body_html       text,
-  message_id      text,
-  in_reply_to     text,
-  has_attachments boolean not null default false
-);
-
-create index if not exists email_messages_thread_idx
-  on public.email_messages (thread_id, created_at);
-
-create unique index if not exists email_messages_message_id_key
-  on public.email_messages (message_id) where message_id is not null;
-
-alter table public.email_threads enable row level security;
-alter table public.email_messages enable row level security;
-
-drop policy if exists "admins read email threads" on public.email_threads;
-create policy "admins read email threads"
-  on public.email_threads for select to authenticated using (public.is_admin());
-
-drop policy if exists "admins update email threads" on public.email_threads;
-create policy "admins update email threads"
-  on public.email_threads for update to authenticated
-  using (public.is_admin()) with check (public.is_admin());
-
-drop policy if exists "admins read email messages" on public.email_messages;
-create policy "admins read email messages"
-  on public.email_messages for select to authenticated using (public.is_admin());
-
-create or replace function public.touch_email_thread()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  update public.email_threads
-     set last_message_at = new.created_at,
-         status = case when new.direction = 'inbound' then 'new' else status end
-   where id = new.thread_id;
-  return new;
-end;
-$$;
-
-drop trigger if exists email_messages_touch_thread on public.email_messages;
-create trigger email_messages_touch_thread
-  after insert on public.email_messages
-  for each row execute function public.touch_email_thread();
-
--- ---------------------------------------------------------------------------
--- Realtime: RLS still applies, so a visitor only sees rows from their own
--- session; admins see everything.
--- ---------------------------------------------------------------------------
-
+-- Realtime: both sides of the conversation stream over these two tables.
+-- Realtime honours the policies above, so a visitor only ever receives rows
+-- from their own session.
 do $$
 begin
   if not exists (
@@ -286,16 +253,9 @@ begin
 
   if not exists (
     select 1 from pg_publication_tables
-    where pubname = 'supabase_realtime' and tablename = 'email_messages'
+    where pubname = 'supabase_realtime' and tablename = 'bookings'
   ) then
-    alter publication supabase_realtime add table public.email_messages;
-  end if;
-
-  if not exists (
-    select 1 from pg_publication_tables
-    where pubname = 'supabase_realtime' and tablename = 'email_threads'
-  ) then
-    alter publication supabase_realtime add table public.email_threads;
+    alter publication supabase_realtime add table public.bookings;
   end if;
 end
 $$;

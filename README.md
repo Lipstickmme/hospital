@@ -58,17 +58,28 @@ included, goes to the server function.
 
 ## Backend setup
 
-Point the app at any Supabase project (the free tier is enough).
+Point the app at any Supabase project (the free tier is enough). Everything
+below is done in the Supabase dashboard.
 
-1. Run the migrations in `drizzle/migrations/` in order, via the Supabase SQL
-   editor or the CLI. They are guarded, so re-running one is safe.
-2. Turn on **anonymous sign-ins** (Authentication → Providers → Anonymous).
-   The chat widget needs it: visitors sign in anonymously so every row they
-   write carries a real `auth.uid()`, and row level security grants them their
-   own conversation and nothing else. No bearer-token scheme of our own, and
-   no service-role key in the browser.
-3. Grant yourself staff access by inserting your user id into `user_roles`
-   with role `admin`, then sign in at `/admin`.
+1. **Run the schema.** SQL Editor → paste and run
+   `supabase/migrations/0001_init.sql`, then `0002_email.sql` if you want the
+   inbound-mail inbox (skip it otherwise — nothing else depends on it). Both
+   are guarded, so re-running either is safe.
+
+2. **Enable anonymous sign-ins** — Authentication → Providers → Anonymous.
+   The chat widget does not work without this. Visitors sign in anonymously so
+   every row they write carries a real `auth.uid()`, and row level security
+   grants them their own conversation and nothing else. No bearer-token scheme
+   of our own, and no service-role key in the browser.
+
+3. **Create your staff login** — Authentication → Users → Add user, ticking
+   *Auto Confirm User*.
+
+4. **Grant it admin.** Edit the one marked line in `supabase/grant-admin.sql`
+   to your address and run the whole file. Repeat for each staff member.
+
+5. **Check your work.** Run `supabase/verify.sql` — every row should read OK.
+   Then sign in at `/admin`.
 
 Mail is optional. Without `RESEND_API_KEY` the app still runs — sends are
 skipped and logged, and the dashboard stays the source of truth for every

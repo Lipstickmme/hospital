@@ -20,16 +20,18 @@ export const sendEmailReply = createServerFn({ method: "POST" })
     const { adminClient, escapeHtml, isEmail, MAILBOX, parseAddress, sendEmail } =
       await import("./_shared.server");
 
-    // Belt and braces: the middleware verifies a session, but only an admin
-    // may send as the company. `has_role(admin)` is the hospital equivalent
-    // of construction's admins-table membership check.
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Error("Not signed in as staff.");
-
     const db = adminClient();
+
+    // Belt and braces: the middleware proves a valid session, but only an
+    // admin may send mail as the company. Read membership with the service
+    // role rather than as the caller, so the answer does not depend on the
+    // caller being able to see their own admins row.
+    const { data: admin } = await db
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!admin) throw new Error("Not signed in as staff.");
 
     const { data: thread, error: threadError } = await db
       .from("email_threads")
