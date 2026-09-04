@@ -1,7 +1,11 @@
 // GET /api/health — reports whether the backend is wired up.
 //
-// Wire it as an HTTP route via nitro or a TanStack Start server file route.
-// A misconfigured deploy is diagnosed here without reading function logs.
+// Dispatched from src/server.ts. A misconfigured deploy is diagnosed here
+// without reading function logs.
+//
+// `missing` names the variables as they should be set in Vercel, not the
+// internal aliases src/lib/env.server.ts fills in, so the answer is directly
+// actionable.
 
 export async function handleHealthCheck(request: Request): Promise<Response> {
   const pick = (names: string[]): string => {
@@ -29,8 +33,8 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
   const formFrom = process.env["FORM_FROM"] ?? `Lifewell Website <website@${domain}>`;
 
   const missing = [
-    !supabaseUrl && "SUPABASE_URL",
-    !anonKey && "SUPABASE_ANON_KEY",
+    !supabaseUrl && "VITE_SUPABASE_URL",
+    !anonKey && "VITE_SUPABASE_ANON_KEY",
     !serviceRoleKey && "SUPABASE_SERVICE_ROLE_KEY",
   ].filter(Boolean) as string[];
 

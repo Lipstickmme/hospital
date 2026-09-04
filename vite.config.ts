@@ -6,6 +6,18 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// The deployment sets VITE_SUPABASE_ANON_KEY (the name Supabase's own dashboard
+// uses). The generated browser client reads VITE_SUPABASE_PUBLISHABLE_KEY.
+//
+// import.meta.env is inlined at build time, so this cannot be fixed at runtime
+// like the server side is in src/lib/env.server.ts. Setting the alias on
+// process.env here — before the wrapper calls Vite's loadEnv, which reads
+// process.env for VITE_-prefixed keys — gets the value into the client bundle
+// without editing a generated file. Only fills a blank; an explicit value wins.
+if (!process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] && process.env["VITE_SUPABASE_ANON_KEY"]) {
+  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] = process.env["VITE_SUPABASE_ANON_KEY"];
+}
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error

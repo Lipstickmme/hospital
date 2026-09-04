@@ -30,10 +30,28 @@ included, goes to the server function.
 1. Import the repository in Vercel. Leave the framework preset as **Other**
    (`vercel.json` already sets `"framework": null`); the build command and
    package manager are detected from `package.json` and `bun.lock`.
-2. Add every variable from `.env.example` under **Settings → Environment
-   Variables**. `VITE_*` values are inlined into the browser bundle and are
-   public by design; everything else is server-only. Never put a `VITE_`
-   prefix on a secret.
+2. Add these under **Settings → Environment Variables** (Production and
+   Preview). `VITE_*` values are inlined into the browser bundle and are
+   public by design — row level security is what protects the data. Never put
+   a `VITE_` prefix on a secret.
+
+   | Variable | Required | Notes |
+   | --- | --- | --- |
+   | `VITE_SUPABASE_URL` | yes | Public |
+   | `VITE_SUPABASE_ANON_KEY` | yes | Public |
+   | `SUPABASE_SERVICE_ROLE_KEY` | yes | **Secret.** Bypasses RLS |
+   | `RESEND_API_KEY` | no | Without it, sends are skipped and logged |
+   | `RESEND_WEBHOOK_SECRET` | no | Needed only to receive mail |
+   | `FORM_TO` | no | Where form notifications land |
+   | `FORM_FROM` | no | Domain must be verified in Resend |
+   | `MAILBOX_ADDRESS` | no | Address staff reply as |
+   | `FORWARD_TO` | no | Must be on **another** domain, or mail loops |
+
+   The generated Supabase clients under `src/integrations/supabase/` read the
+   older `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` names. Those are aliased
+   automatically — at runtime by `src/lib/env.server.ts` for the server, and at
+   build time in `vite.config.ts` for the browser bundle — so only the names in
+   the table above need setting.
 3. Deploy, then open `/api/health` — it reports exactly which variables the
    running function can see, so a misconfigured deploy is one request to
    diagnose rather than a silently failing form.
