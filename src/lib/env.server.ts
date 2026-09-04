@@ -18,13 +18,28 @@
 // `import "./env.server"` is tree-shaken out of the server bundle entirely and
 // the aliases silently never get set. A call from a reachable entry survives.
 
+// Covers the names Vercel's Supabase integration injects (SUPABASE_ANON_KEY,
+// SUPABASE_SECRET_KEY, NEXT_PUBLIC_*) as well as the ones set by hand, so
+// connecting the integration is enough on its own.
+// Keep in step with the CLIENT_ALIASES list in vite.config.ts.
 const ALIASES: Array<[canonical: string, sources: string[]]> = [
-  ["SUPABASE_URL", ["VITE_SUPABASE_URL"]],
+  [
+    "SUPABASE_URL",
+    ["VITE_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL", "SUPABASE_NEXT_PUBLIC_SUPABASE_URL"],
+  ],
   [
     "SUPABASE_PUBLISHABLE_KEY",
-    ["VITE_SUPABASE_ANON_KEY", "SUPABASE_ANON_KEY", "VITE_SUPABASE_PUBLISHABLE_KEY"],
+    [
+      "VITE_SUPABASE_ANON_KEY",
+      "SUPABASE_ANON_KEY",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "VITE_SUPABASE_PUBLISHABLE_KEY",
+    ],
   ],
-  ["SUPABASE_ANON_KEY", ["VITE_SUPABASE_ANON_KEY", "SUPABASE_PUBLISHABLE_KEY"]],
+  [
+    "SUPABASE_ANON_KEY",
+    ["VITE_SUPABASE_ANON_KEY", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_PUBLISHABLE_KEY"],
+  ],
   ["SUPABASE_SERVICE_ROLE_KEY", ["SUPABASE_SECRET_KEY"]],
 ];
 

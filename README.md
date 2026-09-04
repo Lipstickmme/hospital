@@ -30,28 +30,43 @@ included, goes to the server function.
 1. Import the repository in Vercel. Leave the framework preset as **Other**
    (`vercel.json` already sets `"framework": null`); the build command and
    package manager are detected from `package.json` and `bun.lock`.
-2. Add these under **Settings → Environment Variables** (Production and
-   Preview). `VITE_*` values are inlined into the browser bundle and are
-   public by design — row level security is what protects the data. Never put
-   a `VITE_` prefix on a secret.
+2. **Supabase variables.** Connecting Vercel's Supabase integration is enough
+   on its own — the names it injects (`SUPABASE_URL`, `SUPABASE_ANON_KEY`,
+   `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_*`) are all recognised. Nothing needs
+   adding by hand, and nothing it manages should be deleted.
 
-   | Variable | Required | Notes |
+   Setting them yourself instead works too; any one name per row is enough:
+
+   | Purpose | Accepted names | Notes |
    | --- | --- | --- |
-   | `VITE_SUPABASE_URL` | yes | Public |
-   | `VITE_SUPABASE_ANON_KEY` | yes | Public |
-   | `SUPABASE_SERVICE_ROLE_KEY` | yes | **Secret.** Bypasses RLS |
-   | `RESEND_API_KEY` | no | Without it, sends are skipped and logged |
-   | `RESEND_WEBHOOK_SECRET` | no | Needed only to receive mail |
-   | `FORM_TO` | no | Where form notifications land |
-   | `FORM_FROM` | no | Domain must be verified in Resend |
-   | `MAILBOX_ADDRESS` | no | Address staff reply as |
-   | `FORWARD_TO` | no | Must be on **another** domain, or mail loops |
+   | Project URL | `SUPABASE_URL`, `VITE_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL` | Public |
+   | Anon key | `SUPABASE_ANON_KEY`, `VITE_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public |
+   | Service role | `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_SECRET_KEY` | **Secret** |
 
-   The generated Supabase clients under `src/integrations/supabase/` read the
-   older `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` names. Those are aliased
-   automatically — at runtime by `src/lib/env.server.ts` for the server, and at
-   build time in `vite.config.ts` for the browser bundle — so only the names in
-   the table above need setting.
+3. **Mail variables**, all optional, added by hand:
+
+   | Variable | Notes |
+   | --- | --- |
+   | `RESEND_API_KEY` | Without it, sends are skipped and logged |
+   | `RESEND_WEBHOOK_SECRET` | Needed only to receive mail |
+   | `FORM_TO` | Where form notifications land |
+   | `FORM_FROM` | Domain must be verified in Resend |
+   | `MAILBOX_ADDRESS` | Address staff reply as |
+   | `FORWARD_TO` | Must be on **another** domain, or mail loops |
+
+   Only the project URL and anon key are ever published to the browser. The
+   aliasing lists in `vite.config.ts` are explicit rather than a prefix match,
+   so a service-role key, Postgres password or JWT secret cannot end up behind
+   a `VITE_` name. Never add a `VITE_` prefix to a secret yourself.
+
+   Two naming layers are reconciled automatically: the generated clients under
+   `src/integrations/supabase/` read `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY`,
+   filled in at runtime by `src/lib/env.server.ts`, and the browser bundle needs
+   `VITE_`-prefixed names, filled in at build time by `vite.config.ts`.
+
+   **`VITE_*` is baked in at build time**, so adding or changing a Supabase
+   variable does nothing until you redeploy. `/api/health` reports
+   `browserBundleConfigured` for exactly this reason.
 3. Deploy, then open `/api/health` — it reports exactly which variables the
    running function can see, so a misconfigured deploy is one request to
    diagnose rather than a silently failing form.
