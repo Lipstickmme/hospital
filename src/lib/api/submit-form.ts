@@ -48,11 +48,7 @@ const chatNotifySchema = z.object({
   }),
 });
 
-const inputSchema = z.discriminatedUnion("kind", [
-  enquirySchema,
-  bookingSchema,
-  chatNotifySchema,
-]);
+const inputSchema = z.discriminatedUnion("kind", [enquirySchema, bookingSchema, chatNotifySchema]);
 
 export const submitForm = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))

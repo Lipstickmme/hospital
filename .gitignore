@@ -16,6 +16,19 @@ dist-ssr
 .nitro
 *.local
 
+# Nitro's vercel preset build output
+.vercel
+
+# Real secrets. Copy .env.example to .env and fill it in; set the same keys
+# in Vercel → Settings → Environment Variables.
+.env
+.env.*
+!.env.example
+
+# This project installs with bun; a stray npm lockfile confuses Vercel's
+# package-manager detection.
+package-lock.json
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

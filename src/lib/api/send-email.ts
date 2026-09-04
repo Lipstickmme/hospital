@@ -17,25 +17,21 @@ export const sendEmailReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ context, data }) => {
-    const {
-      adminClient,
-      escapeHtml,
-      isEmail,
-      MAILBOX,
-      parseAddress,
-      sendEmail,
-    } = await import("./_shared.server");
-
-    // Belt and braces: the middleware verifies a session, but only an admin
-    // may send as the company. `has_role(admin)` is the hospital equivalent
-    // of construction's admins-table membership check.
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Error("Not signed in as staff.");
+    const { adminClient, escapeHtml, isEmail, MAILBOX, parseAddress, sendEmail } =
+      await import("./_shared.server");
 
     const db = adminClient();
+
+    // Belt and braces: the middleware proves a valid session, but only an
+    // admin may send mail as the company. Read membership with the service
+    // role rather than as the caller, so the answer does not depend on the
+    // caller being able to see their own admins row.
+    const { data: admin } = await db
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!admin) throw new Error("Not signed in as staff.");
 
     const { data: thread, error: threadError } = await db
       .from("email_threads")
@@ -60,9 +56,7 @@ export const sendEmailReply = createServerFn({ method: "POST" })
       .limit(1)
       .maybeSingle();
 
-    const subject = /^re\s*:/i.test(thread.subject)
-      ? thread.subject
-      : `Re: ${thread.subject}`;
+    const subject = /^re\s*:/i.test(thread.subject) ? thread.subject : `Re: ${thread.subject}`;
 
     const html = `<div style="color:#0c0d0e;font:400 15px/1.6 system-ui,-apple-system,Segoe UI,sans-serif">${escapeHtml(
       data.body,
@@ -79,9 +73,7 @@ export const sendEmailReply = createServerFn({ method: "POST" })
     });
 
     if (!resendId) {
-      throw new Error(
-        "Resend would not accept that message. Check the domain is verified.",
-      );
+      throw new Error("Resend would not accept that message. Check the domain is verified.");
     }
 
     const { error: insertError } = await db.from("email_messages").insert({
@@ -99,10 +91,7 @@ export const sendEmailReply = createServerFn({ method: "POST" })
     if (insertError) throw new Error(insertError.message);
 
     // Answering is what moves a conversation off the waiting pile.
-    await db
-      .from("email_threads")
-      .update({ status: "in_progress" })
-      .eq("id", data.thread_id);
+    await db.from("email_threads").update({ status: "in_progress" }).eq("id", data.thread_id);
 
     return { ok: true as const };
   });

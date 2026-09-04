@@ -55,11 +55,7 @@ export function useFormSubmit({ kind, extra }: Options) {
       form.reset();
       setState("sent");
     } catch (caught) {
-      setError(
-        caught instanceof Error
-          ? caught.message
-          : "We could not send that just now.",
-      );
+      setError(caught instanceof Error ? caught.message : "We could not send that just now.");
       setState("error");
     }
   };

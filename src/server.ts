@@ -1,10 +1,28 @@
 import "./lib/error-capture";
 
+import { normaliseSupabaseEnv } from "./lib/env.server";
 import { consumeLastCapturedError } from "./lib/error-capture";
+
 import { renderErrorPage } from "./lib/error-page";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
+};
+
+// Before any handler runs, so the generated Supabase clients — which read
+// SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY — find the values the deployment
+// sets as VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY.
+normaliseSupabaseEnv();
+
+// This TanStack Start version has no file-based server routes, so plain HTTP
+// endpoints are dispatched here, ahead of SSR. Needed for anything an outside
+// service calls directly — Resend posts the inbound-mail webhook, and /api/health
+// has to answer a bare GET. Everything the browser calls goes through
+// createServerFn instead and never reaches this table.
+const apiRoutes: Record<string, () => Promise<(request: Request) => Promise<Response>>> = {
+  "/api/inbound-email": async () =>
+    (await import("./lib/api/inbound-email.server")).handleInboundEmail,
+  "/api/health": async () => (await import("./lib/api/health.server")).handleHealthCheck,
 };
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
@@ -47,6 +65,9 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const route = apiRoutes[new URL(request.url).pathname];
+      if (route) return await (await route())(request);
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

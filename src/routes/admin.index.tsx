@@ -38,7 +38,9 @@ function StatusPill({ status }: { status: Status }) {
         ? "bg-amber-500/20 text-amber-700 dark:text-amber-300"
         : "bg-muted text-muted-foreground";
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${tone}`}>
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${tone}`}
+    >
       {statuses.find((entry) => entry.value === status)?.label}
     </span>
   );
@@ -88,10 +90,7 @@ function AdminEnquiriesPage() {
     setRecords((current) =>
       current.map((record) => (record.id === id ? { ...record, status } : record)),
     );
-    const { error: updateError } = await supabase
-      .from("enquiries")
-      .update({ status })
-      .eq("id", id);
+    const { error: updateError } = await supabase.from("enquiries").update({ status }).eq("id", id);
     if (updateError) {
       setError(updateError.message);
       void load();
@@ -105,13 +104,15 @@ function AdminEnquiriesPage() {
       <div className="flex flex-wrap items-baseline justify-between gap-4">
         <h1 className="text-2xl font-semibold">Enquiries</h1>
         <p className="text-sm text-muted-foreground">
-          {records.filter((record) => record.status === "new").length} new of{" "}
-          {records.length}
+          {records.filter((record) => record.status === "new").length} new of {records.length}
         </p>
       </div>
 
       {error && (
-        <p role="alert" className="mt-6 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm">
+        <p
+          role="alert"
+          className="mt-6 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm"
+        >
           {error}
         </p>
       )}
@@ -160,9 +161,7 @@ function AdminEnquiriesPage() {
                 Reply by email
               </a>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {when(selected.created_at)}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{when(selected.created_at)}</p>
 
             <div className="mt-4">
               <Field label="Email" value={selected.email} />
