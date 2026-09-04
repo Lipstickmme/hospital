@@ -1,12 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 // Sends a reply from the dashboard as the company mailbox, and records it on
 // the thread so the conversation reads in one place.
 //
-// Staff-only: the caller's Supabase session is validated by the middleware
-// and checked against the admins view before anything is sent.
+// Staff only: requireAdmin validates the caller's bearer token with Supabase
+// Auth and checks membership of `admins` with the service role. Both checks are
+// server side; nothing trusts the browser. The token is attached to the request
+// by the attachSupabaseAuth middleware in src/start.ts.
 
 const inputSchema = z.object({
   thread_id: z.string().uuid(),
@@ -14,24 +16,16 @@ const inputSchema = z.object({
 });
 
 export const sendEmailReply = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => inputSchema.parse(input))
-  .handler(async ({ context, data }) => {
-    const { adminClient, escapeHtml, isEmail, MAILBOX, parseAddress, sendEmail } =
+  .handler(async ({ data }) => {
+    const { adminClient, escapeHtml, isEmail, MAILBOX, parseAddress, requireAdmin, sendEmail } =
       await import("./_shared.server");
 
-    const db = adminClient();
+    if (!(await requireAdmin(getRequest()))) {
+      throw new Error("Not signed in as staff.");
+    }
 
-    // Belt and braces: the middleware proves a valid session, but only an
-    // admin may send mail as the company. Read membership with the service
-    // role rather than as the caller, so the answer does not depend on the
-    // caller being able to see their own admins row.
-    const { data: admin } = await db
-      .from("admins")
-      .select("user_id")
-      .eq("user_id", context.userId)
-      .maybeSingle();
-    if (!admin) throw new Error("Not signed in as staff.");
+    const db = adminClient();
 
     const { data: thread, error: threadError } = await db
       .from("email_threads")

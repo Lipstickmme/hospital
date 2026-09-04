@@ -1,9 +1,8 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { CalendarClock, Loader2, LogOut, Mail, MessageSquare, Users } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { isBackendConfigured } from "@/lib/backend";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 
 export const Route = createFileRoute("/admin")({
@@ -27,7 +26,7 @@ function AdminLayout() {
   const { user, isAdmin, loading } = useAdminAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  if (!isBackendConfigured) {
+  if (!isSupabaseConfigured) {
     return (
       <div className="grid min-h-screen place-items-center bg-secondary/40 px-6 text-center">
         <div className="glass max-w-md rounded-4xl p-8">

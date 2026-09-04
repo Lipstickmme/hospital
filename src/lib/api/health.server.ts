@@ -3,9 +3,7 @@
 // Dispatched from src/server.ts. A misconfigured deploy is diagnosed here
 // without reading function logs.
 //
-// `missing` names the variables as they should be set in Vercel, not the
-// internal aliases src/lib/env.server.ts fills in, so the answer is directly
-// actionable.
+// `missing` lists each accepted spelling, so the answer is directly actionable.
 
 export async function handleHealthCheck(request: Request): Promise<Response> {
   const pick = (names: string[]): string => {

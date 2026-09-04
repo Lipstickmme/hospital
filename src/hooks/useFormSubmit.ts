@@ -1,7 +1,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 
-import { isBackendConfigured } from "@/lib/backend";
+import { isSupabaseConfigured } from "@/lib/supabase";
 import { submitForm } from "@/lib/api/submit-form";
 
 export type SubmitState = "idle" | "sending" | "sent" | "error";
@@ -37,7 +37,7 @@ export function useFormSubmit({ kind, extra }: Options) {
     setState("sending");
     setError(null);
 
-    if (!isBackendConfigured) {
+    if (!isSupabaseConfigured) {
       window.setTimeout(() => setState("sent"), 900);
       return;
     }

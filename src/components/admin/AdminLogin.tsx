@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 /** Staff sign-in. Accounts are created in the Supabase dashboard, not here. */
 export function AdminLogin({ notice }: { notice?: string }) {

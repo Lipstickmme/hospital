@@ -1,6 +1,5 @@
 import "./lib/error-capture";
 
-import { normaliseSupabaseEnv } from "./lib/env.server";
 import { consumeLastCapturedError } from "./lib/error-capture";
 
 import { renderErrorPage } from "./lib/error-page";
@@ -8,11 +7,6 @@ import { renderErrorPage } from "./lib/error-page";
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
-
-// Before any handler runs, so the generated Supabase clients — which read
-// SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY — find the values the deployment
-// sets as VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY.
-normaliseSupabaseEnv();
 
 // This TanStack Start version has no file-based server routes, so plain HTTP
 // endpoints are dispatched here, ahead of SSR. Needed for anything an outside

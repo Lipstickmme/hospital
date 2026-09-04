@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { submitForm } from "@/lib/api/submit-form";
 
 export type ChatMessage = {
@@ -36,7 +36,20 @@ export function useVisitorChat() {
     if (data.session) return data.session.user.id;
 
     const { data: signIn, error: signInError } = await supabase.auth.signInAnonymously();
-    if (signInError) throw signInError;
+    if (signInError) {
+      // By far the most common cause, and the raw message ("Anonymous sign-ins
+      // are disabled") does not say where to fix it — or that it must be enabled
+      // on the same project this build points at, which is not necessarily the
+      // one last opened in the dashboard.
+      if (/anonymous/i.test(signInError.message)) {
+        throw new Error(
+          "Chat is unavailable: anonymous sign-ins are disabled on this Supabase " +
+            "project. Enable them under Authentication -> Providers -> Anonymous, " +
+            "on the project shown as supabaseUrl at /api/health.",
+        );
+      }
+      throw signInError;
+    }
 
     return signIn.user?.id ?? null;
   }, []);
