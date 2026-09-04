@@ -36,10 +36,14 @@ export function SiteHeader() {
               <Plus className="h-5 w-5" strokeWidth={3} />
             </span>
             <span className="min-w-0 leading-tight">
-              <span className={`block truncate text-sm font-semibold tracking-tight ${scrolled ? "" : "text-primary-foreground"}`}>
+              <span
+                className={`block truncate text-sm font-semibold tracking-tight ${scrolled ? "" : "text-primary-foreground"}`}
+              >
                 LIFEWELL MEDICAL
               </span>
-              <span className={`block truncate text-xs ${scrolled ? "text-muted-foreground" : "text-primary-foreground/70"}`}>
+              <span
+                className={`block truncate text-xs ${scrolled ? "text-muted-foreground" : "text-primary-foreground/70"}`}
+              >
                 CENTER ATHENS
               </span>
             </span>

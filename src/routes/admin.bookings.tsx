@@ -66,17 +66,13 @@ function AdminBookingsPage() {
   }, [refresh]);
 
   const filtered = useMemo(
-    () =>
-      bookings.filter((b) => statusFilter === "all" || b.status === statusFilter),
+    () => bookings.filter((b) => statusFilter === "all" || b.status === statusFilter),
     [bookings, statusFilter],
   );
 
   async function onStatus(id: string, status: BookingStatus) {
     setBusyId(id);
-    const { error: updateError } = await supabase
-      .from("bookings")
-      .update({ status })
-      .eq("id", id);
+    const { error: updateError } = await supabase.from("bookings").update({ status }).eq("id", id);
     if (updateError) setError(updateError.message);
     await refresh();
     setBusyId(null);
@@ -108,7 +104,10 @@ function AdminBookingsPage() {
       </div>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm">
+        <p
+          role="alert"
+          className="mb-4 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm"
+        >
           {error}
         </p>
       )}

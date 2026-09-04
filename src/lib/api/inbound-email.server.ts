@@ -56,9 +56,10 @@ export async function handleInboundEmail(request: Request): Promise<Response> {
 
   const rawBody = await request.text();
 
-  const verified = await verifyResendWebhook(rawBody, request.headers).catch(
-    (error) => ({ ok: false as const, reason: `verifier threw: ${errorMessage(error)}` }),
-  );
+  const verified = await verifyResendWebhook(rawBody, request.headers).catch((error) => ({
+    ok: false as const,
+    reason: `verifier threw: ${errorMessage(error)}`,
+  }));
 
   if (!verified.ok) {
     console.error(`Rejected inbound webhook: ${verified.reason}`);
@@ -89,16 +90,13 @@ export async function handleInboundEmail(request: Request): Promise<Response> {
 
     if (seen) return json(200, { ok: true, duplicate: true });
 
-    const response = await fetch(
-      `https://api.resend.com/emails/receiving/${emailId}`,
-      { headers: { Authorization: `Bearer ${RESEND_API_KEY}` } },
-    );
+    const response = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}` },
+    });
 
     if (!response.ok) {
       const detail = (await response.text()).slice(0, 300);
-      console.error(
-        `Could not fetch received email ${emailId}: HTTP ${response.status} ${detail}`,
-      );
+      console.error(`Could not fetch received email ${emailId}: HTTP ${response.status} ${detail}`);
       return json(502, {
         error: "Could not retrieve the message body.",
         stage: "fetch-received-email",
@@ -175,9 +173,7 @@ export async function handleInboundEmail(request: Request): Promise<Response> {
     const forwardTarget = parseAddress(FORWARD_TO).email;
 
     if (FORWARD_TO && (ours.has(forwardTarget) || ours.has(from.email))) {
-      console.warn(
-        `Refusing to forward ${from.email} to ${forwardTarget}: that is a mail loop.`,
-      );
+      console.warn(`Refusing to forward ${from.email} to ${forwardTarget}: that is a mail loop.`);
     } else if (FORWARD_TO) {
       const body = email.text?.trim() || "See the dashboard for the full message.";
       sendEmail({
@@ -186,9 +182,10 @@ export async function handleInboundEmail(request: Request): Promise<Response> {
         subject: `Fwd: ${subject}`,
         html: `<p style="color:#5c6467;font:400 13px/1.6 system-ui">From ${escapeHtml(
           email.from,
-        )}</p><div style="color:#0c0d0e;font:400 15px/1.6 system-ui">${escapeHtml(
-          body,
-        ).replace(/\n/g, "<br>")}</div>`,
+        )}</p><div style="color:#0c0d0e;font:400 15px/1.6 system-ui">${escapeHtml(body).replace(
+          /\n/g,
+          "<br>",
+        )}</div>`,
         text: `From ${email.from}\n\n${body}`,
         replyTo: from.email,
       }).catch((error) => console.error("forward failed:", error));

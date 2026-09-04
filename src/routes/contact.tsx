@@ -28,12 +28,10 @@ function ContactPage() {
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-4 pt-32 pb-16 sm:px-6">
         <header className="text-center">
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-            Contact us
-          </h1>
+          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Contact us</h1>
           <p className="mt-4 text-muted-foreground">
-            Send us a message and our care team will reply by email — usually
-            within a few hours during working hours.
+            Send us a message and our care team will reply by email — usually within a few hours
+            during working hours.
           </p>
         </header>
 
@@ -41,8 +39,8 @@ function ContactPage() {
           <div className="glass mt-10 rounded-4xl p-8 text-center">
             <h2 className="text-xl font-semibold">Thanks — we've got your message.</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              We just emailed you a confirmation. Prefer a live chat? Open the
-              widget in the bottom-right corner.
+              We just emailed you a confirmation. Prefer a live chat? Open the widget in the
+              bottom-right corner.
             </p>
             <button type="button" onClick={reset} className="btn-glass mt-6 text-sm">
               Send another message
@@ -109,7 +107,11 @@ function ContactPage() {
               </p>
             )}
 
-            <button type="submit" disabled={sending} className="btn-glass w-full justify-center py-3">
+            <button
+              type="submit"
+              disabled={sending}
+              className="btn-glass w-full justify-center py-3"
+            >
               {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {sending ? "Sending…" : "Send message"}
             </button>

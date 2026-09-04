@@ -17,14 +17,8 @@ export const sendEmailReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ context, data }) => {
-    const {
-      adminClient,
-      escapeHtml,
-      isEmail,
-      MAILBOX,
-      parseAddress,
-      sendEmail,
-    } = await import("./_shared.server");
+    const { adminClient, escapeHtml, isEmail, MAILBOX, parseAddress, sendEmail } =
+      await import("./_shared.server");
 
     // Belt and braces: the middleware verifies a session, but only an admin
     // may send as the company. `has_role(admin)` is the hospital equivalent
@@ -60,9 +54,7 @@ export const sendEmailReply = createServerFn({ method: "POST" })
       .limit(1)
       .maybeSingle();
 
-    const subject = /^re\s*:/i.test(thread.subject)
-      ? thread.subject
-      : `Re: ${thread.subject}`;
+    const subject = /^re\s*:/i.test(thread.subject) ? thread.subject : `Re: ${thread.subject}`;
 
     const html = `<div style="color:#0c0d0e;font:400 15px/1.6 system-ui,-apple-system,Segoe UI,sans-serif">${escapeHtml(
       data.body,
@@ -79,9 +71,7 @@ export const sendEmailReply = createServerFn({ method: "POST" })
     });
 
     if (!resendId) {
-      throw new Error(
-        "Resend would not accept that message. Check the domain is verified.",
-      );
+      throw new Error("Resend would not accept that message. Check the domain is verified.");
     }
 
     const { error: insertError } = await db.from("email_messages").insert({
@@ -99,10 +89,7 @@ export const sendEmailReply = createServerFn({ method: "POST" })
     if (insertError) throw new Error(insertError.message);
 
     // Answering is what moves a conversation off the waiting pile.
-    await db
-      .from("email_threads")
-      .update({ status: "in_progress" })
-      .eq("id", data.thread_id);
+    await db.from("email_threads").update({ status: "in_progress" }).eq("id", data.thread_id);
 
     return { ok: true as const };
   });

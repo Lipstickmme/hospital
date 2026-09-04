@@ -33,8 +33,8 @@ function AdminLayout() {
         <div className="glass max-w-md rounded-4xl p-8">
           <h1 className="text-xl font-semibold">Backend not configured</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Set <code>VITE_SUPABASE_URL</code> and{" "}
-            <code>VITE_SUPABASE_PUBLISHABLE_KEY</code>, then reload.
+            Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_PUBLISHABLE_KEY</code>, then
+            reload.
           </p>
         </div>
       </div>
@@ -66,9 +66,7 @@ function AdminLayout() {
             LIFEWELL <span className="text-muted-foreground">/ admin</span>
           </Link>
           <div className="flex items-center gap-3">
-            <span className="hidden text-xs text-muted-foreground sm:block">
-              {user.email}
-            </span>
+            <span className="hidden text-xs text-muted-foreground sm:block">{user.email}</span>
             <button
               type="button"
               onClick={() => void supabase.auth.signOut()}

@@ -152,13 +152,15 @@ function AdminEmailPage() {
       <div className="flex flex-wrap items-baseline justify-between gap-4">
         <h1 className="text-2xl font-semibold">Email</h1>
         <p className="text-sm text-muted-foreground">
-          {threads.filter((thread) => thread.status === "new").length} unread of{" "}
-          {threads.length}
+          {threads.filter((thread) => thread.status === "new").length} unread of {threads.length}
         </p>
       </div>
 
       {error && (
-        <p role="alert" className="mt-6 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm">
+        <p
+          role="alert"
+          className="mt-6 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm"
+        >
           {error}
         </p>
       )}
@@ -172,11 +174,11 @@ function AdminEmailPage() {
           )}
           {!loadingList && threads.length === 0 && (
             <li className="p-6 text-sm leading-relaxed text-muted-foreground">
-              Nothing yet. Mail sent to the company mailbox appears here within a few
-              seconds of arriving.
+              Nothing yet. Mail sent to the company mailbox appears here within a few seconds of
+              arriving.
               <span className="mt-3 block text-xs">
-                Sent a test and nothing showed? Resend → Webhooks → your endpoint has a
-                delivery log with the exact response this site gave.
+                Sent a test and nothing showed? Resend → Webhooks → your endpoint has a delivery log
+                with the exact response this site gave.
               </span>
             </li>
           )}
@@ -202,9 +204,7 @@ function AdminEmailPage() {
                     <span className="mt-1 size-2 shrink-0 rounded-full bg-primary" />
                   )}
                 </div>
-                <p className="mt-1 truncate text-sm text-muted-foreground">
-                  {thread.subject}
-                </p>
+                <p className="mt-1 truncate text-sm text-muted-foreground">{thread.subject}</p>
                 <p className="mt-1 text-[11px] text-muted-foreground">
                   {when(thread.last_message_at)}
                 </p>
@@ -253,13 +253,10 @@ function AdminEmailPage() {
                         ? "You"
                         : message.from_name || message.from_email}
                     </p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {when(message.created_at)}
-                    </p>
+                    <p className="text-[11px] text-muted-foreground">{when(message.created_at)}</p>
                   </div>
                   <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">
-                    {message.body_text?.trim() ||
-                      "(no plain-text body, open it in your mail app)"}
+                    {message.body_text?.trim() || "(no plain-text body, open it in your mail app)"}
                   </p>
                   {message.has_attachments && (
                     <p className="mt-2 text-[11px] font-semibold uppercase tracking-wide text-primary">

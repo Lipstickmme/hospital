@@ -61,8 +61,7 @@ export function ChatWidget() {
   }, [messages, open]);
 
   if (!isBackendConfigured) return null;
-  if (isStaff || pathname.startsWith("/admin") || pathname.startsWith("/auth"))
-    return null;
+  if (isStaff || pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
   const openConversation = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -114,21 +113,14 @@ export function ChatWidget() {
 
           {sessionId ? (
             <>
-              <ol
-                ref={threadRef}
-                className="flex flex-1 flex-col gap-3 overflow-y-auto p-4"
-              >
+              <ol ref={threadRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
                 {messages.map((message) => (
-                  <Bubble
-                    key={message.id}
-                    sender={message.sender}
-                    body={message.body}
-                  />
+                  <Bubble key={message.id} sender={message.sender} body={message.body} />
                 ))}
                 {messages.length === 1 && (
                   <li className="mt-1 text-xs text-muted-foreground">
-                    Someone will pick this up shortly. You can close the window,
-                    the conversation is kept.
+                    Someone will pick this up shortly. You can close the window, the conversation is
+                    kept.
                   </li>
                 )}
               </ol>
@@ -168,8 +160,8 @@ export function ChatWidget() {
               className="flex flex-1 flex-col gap-3 overflow-y-auto p-4"
             >
               <p className="text-sm leading-relaxed">
-                Tell us what you need and we will reply here. Leave an email so
-                we can follow up if you have gone by the time we answer.
+                Tell us what you need and we will reply here. Leave an email so we can follow up if
+                you have gone by the time we answer.
               </p>
 
               <label className="text-xs font-medium">

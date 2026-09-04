@@ -13,10 +13,7 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
   };
 
   const supabaseUrl = pick(["SUPABASE_URL", "VITE_SUPABASE_URL"]);
-  const serviceRoleKey = pick([
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_SECRET_KEY",
-  ]);
+  const serviceRoleKey = pick(["SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY"]);
   const anonKey = pick([
     "SUPABASE_ANON_KEY",
     "VITE_SUPABASE_ANON_KEY",
@@ -27,11 +24,9 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
   const webhookSecret = process.env["RESEND_WEBHOOK_SECRET"] ?? "";
   const forwardTo = process.env["FORWARD_TO"] ?? "";
   const domain = process.env["MAIL_DOMAIN"] ?? "lifewellmedicalcenter.example";
-  const mailbox =
-    process.env["MAILBOX_ADDRESS"] ?? `Lifewell Medical <contact@${domain}>`;
+  const mailbox = process.env["MAILBOX_ADDRESS"] ?? `Lifewell Medical <contact@${domain}>`;
   const formTo = process.env["FORM_TO"] ?? `contact@${domain}`;
-  const formFrom =
-    process.env["FORM_FROM"] ?? `Lifewell Website <website@${domain}>`;
+  const formFrom = process.env["FORM_FROM"] ?? `Lifewell Website <website@${domain}>`;
 
   const missing = [
     !supabaseUrl && "SUPABASE_URL",
@@ -57,8 +52,7 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
         webhookSecretUsable += " (no whsec_ prefix, check it was copied whole)";
       }
     } catch {
-      webhookSecretUsable =
-        "no, not valid base64 after the whsec_ prefix. Re-copy it from Resend.";
+      webhookSecretUsable = "no, not valid base64 after the whsec_ prefix. Re-copy it from Resend.";
     }
   }
 
@@ -73,10 +67,9 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
   let resendKeyCanRead: string | null = null;
   if (new URL(request.url).searchParams.has("probe") && resendKey) {
     try {
-      const probe = await fetch(
-        "https://api.resend.com/emails/receiving?limit=1",
-        { headers: { Authorization: `Bearer ${resendKey}` } },
-      );
+      const probe = await fetch("https://api.resend.com/emails/receiving?limit=1", {
+        headers: { Authorization: `Bearer ${resendKey}` },
+      });
       resendKeyCanRead = probe.ok
         ? "yes"
         : `no, HTTP ${probe.status}: ${(await probe.text()).slice(0, 160)}`;
@@ -95,8 +88,7 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
         supabaseAnonKey: Boolean(anonKey),
         supabaseServiceRoleKey: Boolean(serviceRoleKey),
         resendApiKey: Boolean(resendKey),
-        resendKeyCanReadInbound:
-          resendKeyCanRead ?? "not checked. Add ?probe=1 to test it",
+        resendKeyCanReadInbound: resendKeyCanRead ?? "not checked. Add ?probe=1 to test it",
         inboundEmail: inboundReady ? "configured" : "not configured (optional)",
         webhookSecretUsable: webhookSecretUsable ?? "no secret set",
         inboundForwardCopyTo: forwardTo || null,

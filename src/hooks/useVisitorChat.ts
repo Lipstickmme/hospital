@@ -25,9 +25,7 @@ const STORAGE_KEY = "lifewell-chat-session";
 export function useVisitorChat() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [status, setStatus] = useState<"idle" | "starting" | "ready" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<"idle" | "starting" | "ready" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const startingRef = useRef(false);
   const submitFormFn = useServerFn(submitForm);
@@ -37,8 +35,7 @@ export function useVisitorChat() {
     const { data } = await supabase.auth.getSession();
     if (data.session) return data.session.user.id;
 
-    const { data: signIn, error: signInError } =
-      await supabase.auth.signInAnonymously();
+    const { data: signIn, error: signInError } = await supabase.auth.signInAnonymously();
     if (signInError) throw signInError;
 
     return signIn.user?.id ?? null;
@@ -170,11 +167,7 @@ export function useVisitorChat() {
           },
         }).catch(() => {});
       } catch (caught) {
-        setError(
-          caught instanceof Error
-            ? caught.message
-            : "We could not open the chat just now.",
-        );
+        setError(caught instanceof Error ? caught.message : "We could not open the chat just now.");
         setStatus("error");
       } finally {
         startingRef.current = false;
@@ -205,9 +198,7 @@ export function useVisitorChat() {
 
       const message = sent as ChatMessage;
       setMessages((current) =>
-        current.some((entry) => entry.id === message.id)
-          ? current
-          : [...current, message],
+        current.some((entry) => entry.id === message.id) ? current : [...current, message],
       );
     },
     [sessionId],

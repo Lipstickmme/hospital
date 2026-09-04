@@ -58,8 +58,8 @@ export function SafeToComeIn() {
             You should feel confident we&apos;re keeping your family — and our caregivers — safe.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            No matter what brings you in, we take steps every single day to keep you safe during your
-            appointment, procedure or surgery.
+            No matter what brings you in, we take steps every single day to keep you safe during
+            your appointment, procedure or surgery.
           </p>
         </Reveal>
 
@@ -85,7 +85,13 @@ export function SafeToComeIn() {
   );
 }
 
-const promises = ["Free Consultation", "Quality Doctors", "Professional Experts", "Affordable Price", "24/7 Opened"];
+const promises = [
+  "Free Consultation",
+  "Quality Doctors",
+  "Professional Experts",
+  "Affordable Price",
+  "24/7 Opened",
+];
 
 export function ChooseBest() {
   return (

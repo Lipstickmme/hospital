@@ -49,8 +49,8 @@ export function useAdminAuth(): AdminAuth {
 
     void supabase.auth.getUser().then(({ data }) => evaluate(data.user ?? null));
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => evaluate(session?.user ?? null),
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) =>
+      evaluate(session?.user ?? null),
     );
 
     return () => {

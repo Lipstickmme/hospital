@@ -24,10 +24,7 @@ export const SUPABASE_ANON_KEY = env([
   "VITE_SUPABASE_PUBLISHABLE_KEY",
 ]);
 
-export const SERVICE_ROLE_KEY = env([
-  "SUPABASE_SERVICE_ROLE_KEY",
-  "SUPABASE_SECRET_KEY",
-]);
+export const SERVICE_ROLE_KEY = env(["SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY"]);
 
 export const RESEND_API_KEY = process.env["RESEND_API_KEY"] ?? "";
 
@@ -39,15 +36,12 @@ export const RESEND_API_KEY = process.env["RESEND_API_KEY"] ?? "";
  * so a change does not need a code edit, but the default is the source of
  * truth for every address below.
  */
-export const DOMAIN =
-  process.env["MAIL_DOMAIN"] ?? "lifewellmedicalcenter.example";
+export const DOMAIN = process.env["MAIL_DOMAIN"] ?? "lifewellmedicalcenter.example";
 
 export const FORM_TO = process.env["FORM_TO"] ?? `contact@${DOMAIN}`;
-export const FORM_FROM =
-  process.env["FORM_FROM"] ?? `Lifewell Website <website@${DOMAIN}>`;
+export const FORM_FROM = process.env["FORM_FROM"] ?? `Lifewell Website <website@${DOMAIN}>`;
 /** The address staff correspond from. Replies are sent as this. */
-export const MAILBOX =
-  process.env["MAILBOX_ADDRESS"] ?? `Lifewell Medical <contact@${DOMAIN}>`;
+export const MAILBOX = process.env["MAILBOX_ADDRESS"] ?? `Lifewell Medical <contact@${DOMAIN}>`;
 /** Svix signing secret from Resend → Webhooks. Starts `whsec_`. */
 export const RESEND_WEBHOOK_SECRET = process.env["RESEND_WEBHOOK_SECRET"] ?? "";
 /** Optional: every inbound message is also forwarded here as a safety copy. */
@@ -116,10 +110,8 @@ export async function verifyResendWebhook(
   }
 
   const id = headers.get("svix-id") ?? headers.get("webhook-id");
-  const timestamp =
-    headers.get("svix-timestamp") ?? headers.get("webhook-timestamp");
-  const signatures =
-    headers.get("svix-signature") ?? headers.get("webhook-signature");
+  const timestamp = headers.get("svix-timestamp") ?? headers.get("webhook-timestamp");
+  const signatures = headers.get("svix-signature") ?? headers.get("webhook-signature");
 
   if (!id || !timestamp || !signatures) {
     const seen: string[] = [];
@@ -282,9 +274,7 @@ export function emailBody(rows: Array<[string, string]>): string {
  */
 export function ownAddresses(): Set<string> {
   return new Set(
-    [MAILBOX, FORM_FROM, FORM_TO]
-      .map((value) => parseAddress(value).email)
-      .filter(Boolean),
+    [MAILBOX, FORM_FROM, FORM_TO].map((value) => parseAddress(value).email).filter(Boolean),
   );
 }
 

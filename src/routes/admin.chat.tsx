@@ -76,9 +76,7 @@ function AdminChatPage() {
           void loadSessions();
           if (activeIdRef.current !== incoming.session_id) return;
           setMessages((rows) =>
-            rows.some((row) => row.id === incoming.id)
-              ? rows
-              : [...rows, incoming],
+            rows.some((row) => row.id === incoming.id) ? rows : [...rows, incoming],
           );
         },
       )
@@ -132,14 +130,9 @@ function AdminChatPage() {
     }
 
     const message = sent as ChatMessage;
-    setMessages((rows) =>
-      rows.some((row) => row.id === message.id) ? rows : [...rows, message],
-    );
+    setMessages((rows) => (rows.some((row) => row.id === message.id) ? rows : [...rows, message]));
 
-    await supabase
-      .from("chat_sessions")
-      .update({ status: "in_progress" })
-      .eq("id", activeId);
+    await supabase.from("chat_sessions").update({ status: "in_progress" }).eq("id", activeId);
   };
 
   const closeSession = async () => {
@@ -161,7 +154,10 @@ function AdminChatPage() {
       </div>
 
       {error && (
-        <p role="alert" className="mt-6 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm">
+        <p
+          role="alert"
+          className="mt-6 rounded-2xl border-l-2 border-destructive bg-card p-4 text-sm"
+        >
           {error}
         </p>
       )}
@@ -237,10 +233,7 @@ function AdminChatPage() {
               </div>
             </header>
 
-            <ol
-              ref={threadRef}
-              className="flex flex-1 flex-col gap-3 overflow-y-auto p-4"
-            >
+            <ol ref={threadRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
               {messages.map((message) => (
                 <li
                   key={message.id}
@@ -255,10 +248,7 @@ function AdminChatPage() {
               ))}
             </ol>
 
-            <form
-              onSubmit={reply}
-              className="flex items-end gap-2 border-t border-border/60 p-3"
-            >
+            <form onSubmit={reply} className="flex items-end gap-2 border-t border-border/60 p-3">
               <textarea
                 rows={2}
                 value={draft}
