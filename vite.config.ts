@@ -5,9 +5,10 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { loadEnv } from "vite";
 
 // Only VITE_-prefixed variables are inlined into the browser bundle, and only
-// at build time — so unlike the server side (src/lib/env.server.ts) this cannot
+// at build time — so unlike the server side this cannot
 // be fixed at runtime. Setting the aliases on process.env here, before the
 // wrapper calls Vite's loadEnv (which reads process.env for VITE_ keys), gets
 // the values into the client bundle without editing a generated file.
@@ -37,10 +38,15 @@ const CLIENT_ALIASES: Array<[target: string, sources: string[]]> = [
   ],
 ];
 
+// Merge in any .env file, which is where local dev gets its values — checking
+// process.env alone would report a build as unconfigured when it is not.
+const fileEnv = loadEnv(process.env["NODE_ENV"] ?? "production", process.cwd(), "");
+const read = (name: string) => process.env[name] || fileEnv[name];
+
 for (const [target, sources] of CLIENT_ALIASES) {
-  if (process.env[target]) continue;
+  if (read(target)) continue;
   for (const source of sources) {
-    const value = process.env[source];
+    const value = read(source);
     if (value) {
       process.env[target] = value;
       break;
@@ -52,7 +58,7 @@ for (const [target, sources] of CLIENT_ALIASES) {
 // browser on every page that talks to Supabase, which is a confusing way to
 // find out. Say so while the build log is still in front of you.
 for (const [target, sources] of CLIENT_ALIASES) {
-  if (!process.env[target]) {
+  if (!read(target)) {
     console.warn(
       `[env] ${target} is not set and none of its aliases were found ` +
         `(${sources.join(", ")}). The browser bundle will have no Supabase ` +
