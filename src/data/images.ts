@@ -1,12 +1,11 @@
-// Every photograph on the marketing site, in one place.
+// Every photograph on the site, in one place.
 //
 // Components refer to slots by what they mean ("trustedExperts"), never to a
 // filename, so swapping artwork is an edit here and nothing else. Imports are
 // used rather than /public paths so Vite fingerprints and optimises them.
 //
-// The lw* set was supplied as ~1 MB PNGs; they are stored re-encoded as JPEG
-// at width 1600, which is the widest they are ever displayed. That took the
-// set from 6.0 MB to 393 KB with no visible difference. Re-encode any new
+// The photographs were supplied as ~1 MB PNGs and are stored re-encoded as
+// JPEG at the widest size they are ever displayed. Re-encode any new
 // photograph the same way rather than committing a PNG.
 
 import lwBloodPressure from "@/assets/lw.jpg";
@@ -15,13 +14,19 @@ import lwTeam from "@/assets/lw2.jpg";
 import lwScanner from "@/assets/lw3.jpg";
 import lwSeniorDoctors from "@/assets/lw4.jpg";
 import lwDoctor from "@/assets/lw5.jpg";
-import svcPediatric from "@/assets/svc-pediatric.jpg";
+import lwImaging from "@/assets/lw11.jpg";
+import lwTheatre from "@/assets/lw22.jpg";
+import lwNewborn from "@/assets/pediatric.jpg";
+import lwLogo from "@/assets/logo.png";
 
 export const images = {
-  /** Hero carousel, in order: welcome, team, capability. */
+  /** Header and footer wordmark. Transparent PNG, blue on any ground. */
+  logo: lwLogo,
+
+  /** Hero carousel, in order: welcome, surgical capability, diagnostics. */
   heroOne: lwNurse,
-  heroTwo: lwTeam,
-  heroThree: lwScanner,
+  heroTwo: lwTheatre,
+  heroThree: lwImaging,
 
   /** "Yes, It's Safe to Come In" — portrait beside the copy. */
   safeToComeIn: lwDoctor,
@@ -34,6 +39,23 @@ export const images = {
   serviceImmediate: lwDoctor,
   serviceDiagnostic: lwScanner,
   serviceOccupational: lwBloodPressure,
-  // Kept from the original set — none of the new photographs are paediatric.
-  servicePediatric: svcPediatric,
+  servicePediatric: lwNewborn,
+
+  /** Page banners. Wide crops sitting behind a dark veil and white copy. */
+  aboutBanner: lwSeniorDoctors,
+  servicesBanner: lwTheatre,
+  contactBanner: lwNurse,
+
+  /** About page. */
+  aboutStory: lwTeam,
+  aboutCare: lwNurse,
+  aboutTheatre: lwTheatre,
+
+  /** Services page — one per specialty in the full catalogue. */
+  specialtyEmergency: lwDoctor,
+  specialtySurgery: lwTheatre,
+  specialtyImaging: lwImaging,
+  specialtyMaternity: lwNewborn,
+  specialtyCardiology: lwBloodPressure,
+  specialtyGeneral: lwSeniorDoctors,
 } as const;

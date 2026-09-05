@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   CalendarDays,
@@ -12,13 +13,15 @@ import {
 } from "lucide-react";
 
 import { Reveal } from "./Reveal";
+import { TiltCard } from "./TiltCard";
 import { images } from "@/data/images";
+import { featuredServices } from "@/data/services";
 
 const quickLinks = [
-  { label: "Learn More", icon: CalendarDays },
-  { label: "Find Doctors", icon: Stethoscope },
-  { label: "Find Locations", icon: MapPin },
-  { label: "Emergency Contact", icon: Phone },
+  { label: "About the hospital", icon: CalendarDays, to: "/about" as const },
+  { label: "Our specialties", icon: Stethoscope, to: "/services" as const },
+  { label: "Find us in Athens", icon: MapPin, to: "/contact" as const },
+  { label: "Emergency contact", icon: Phone, to: "/contact" as const },
 ];
 
 export function SafeToComeIn() {
@@ -55,10 +58,10 @@ export function SafeToComeIn() {
 
         <Reveal delay={160}>
           <div className="flex flex-col gap-3">
-            {quickLinks.map(({ label, icon: Icon }) => (
-              <a
+            {quickLinks.map(({ label, icon: Icon, to }) => (
+              <Link
                 key={label}
-                href="#contact"
+                to={to}
                 className="btn-glass group w-full justify-between px-6 py-4 text-left"
               >
                 <span className="flex min-w-0 items-center gap-3">
@@ -66,7 +69,7 @@ export function SafeToComeIn() {
                   <span className="truncate">{label}</span>
                 </span>
                 <ChevronRight className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+              </Link>
             ))}
           </div>
         </Reveal>
@@ -205,10 +208,10 @@ export function CtaBand() {
                 Send us a message now — we are ready to serve
               </h2>
             </div>
-            <a href="#contact" className="btn-glass-light shrink-0 px-8 py-4">
+            <Link to="/contact" hash="enquiry" className="btn-glass-light shrink-0 px-8 py-4">
               Contact Us
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
         </div>
       </Reveal>
@@ -216,37 +219,22 @@ export function CtaBand() {
   );
 }
 
-const services = [
-  {
-    title: "Immediate Care",
-    body: "Effective and affordable treatment for non-life threatening illnesses",
-    image: images.serviceImmediate,
-  },
-  {
-    title: "Diagnostic Center",
-    body: "A wide array of reliable lab and diagnostic imaging services",
-    image: images.serviceDiagnostic,
-  },
-  {
-    title: "Occupational Health",
-    body: "Our team keeps people well at work, physically and mentally",
-    image: images.serviceOccupational,
-  },
-  {
-    title: "Pediatric Services",
-    body: "Helping you and your child stay healthy through every milestone",
-    image: images.servicePediatric,
-  },
-];
-
 export function Services() {
   return (
     <section id="services" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28">
       <Reveal>
-        <p className="text-xs font-medium tracking-[0.22em] text-primary uppercase">
-          Working process
-        </p>
-        <h2 className="mt-3 max-w-2xl text-3xl sm:text-4xl">How it helps you stay healthy</h2>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="text-xs font-medium tracking-[0.22em] text-primary uppercase">
+              Working process
+            </p>
+            <h2 className="mt-3 max-w-2xl text-3xl sm:text-4xl">How it helps you stay healthy</h2>
+          </div>
+          <Link to="/services" className="btn-glass shrink-0">
+            All specialties
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </Reveal>
 
       <div className="relative mt-14 grid grid-cols-2 gap-6 sm:gap-10 lg:grid-cols-4">
@@ -257,24 +245,26 @@ export function Services() {
               "repeating-linear-gradient(90deg, var(--color-border) 0 8px, transparent 8px 18px)",
           }}
         />
-        {services.map((s, i) => (
-          <Reveal key={s.title} delay={i * 110}>
-            <div className="group relative text-center">
-              <div className="glass hover-lift mx-auto aspect-square w-full max-w-[13rem] overflow-hidden rounded-full p-2">
-                <img
-                  src={s.image}
-                  alt={s.title}
-                  width={640}
-                  height={640}
-                  loading="lazy"
-                  className="h-full w-full rounded-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              </div>
-              <h3 className="mt-6 text-sm tracking-tight uppercase sm:text-base">{s.title}</h3>
-              <p className="mx-auto mt-2 max-w-[16rem] text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                {s.body}
-              </p>
-            </div>
+        {featuredServices.map((s, i) => (
+          <Reveal key={s.slug} delay={i * 110}>
+            <Link to="/services" hash={s.slug} className="block">
+              <TiltCard glare={false} className="group relative border-0 bg-transparent text-center">
+                <div className="glass mx-auto aspect-square w-full max-w-[13rem] overflow-hidden rounded-full p-2">
+                  <img
+                    src={s.image}
+                    alt={s.title}
+                    width={640}
+                    height={640}
+                    loading="lazy"
+                    className="h-full w-full rounded-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="mt-6 text-sm tracking-tight uppercase sm:text-base">{s.title}</h3>
+                <p className="mx-auto mt-2 max-w-[16rem] text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  {s.summary}
+                </p>
+              </TiltCard>
+            </Link>
           </Reveal>
         ))}
       </div>
@@ -309,40 +299,88 @@ export function Marquee() {
   );
 }
 
+const footerLinks: { label: string; to: "/" | "/about" | "/services" | "/contact"; hash?: string }[] =
+  [
+    { label: "Home", to: "/" },
+    { label: "About us", to: "/about" },
+    { label: "Services", to: "/services" },
+    { label: "Contact us", to: "/contact" },
+    { label: "Book an appointment", to: "/contact", hash: "enquiry" },
+    { label: "Emergency care", to: "/services", hash: "immediate-care" },
+  ];
+
 export function SiteFooter() {
   return (
     <footer id="contact" className="bg-primary-deep text-primary-foreground">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          <div>
-            <h3 className="text-lg">Lifewell Medical Center Athens</h3>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
-              Modern, compassionate healthcare for every stage of life — diagnostics, specialist
-              care, paediatrics and medical flight services.
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="lg:col-span-2">
+            <Link to="/" className="group flex items-center gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/90 ring-1 ring-white/60 transition-transform duration-500 group-hover:scale-105">
+                <img
+                  src={images.logo}
+                  alt=""
+                  width={44}
+                  height={44}
+                  className="h-7 w-7 object-contain"
+                />
+              </span>
+              <h3 className="text-lg">Lifewell Medical Center Athens</h3>
+            </Link>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
+              Modern, compassionate healthcare for every stage of life — emergency care,
+              diagnostics, surgery, maternity and paediatrics, all in one building in Athens.
             </p>
-          </div>
-          <div className="space-y-3 text-sm text-primary-foreground/80">
-            <p className="flex items-center gap-3">
-              <Phone className="h-4 w-4 shrink-0" /> +30-21-1234-7377
-            </p>
-            <p className="flex items-center gap-3">
-              <Mail className="h-4 w-4 shrink-0" /> care@lifewellathens.gr
-            </p>
-            <p className="flex items-center gap-3">
-              <MapPin className="h-4 w-4 shrink-0" /> Athens, Greece
-            </p>
-            <p className="flex items-center gap-3">
-              <Clock className="h-4 w-4 shrink-0" /> Emergency open 24/7
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-primary-foreground/70">
-              Book an appointment or reach our emergency desk any time.
-            </p>
-            <a href="tel:+302111234737" className="btn-glass-light mt-5 w-full sm:w-auto">
+            <a href="tel:+302111234737" className="btn-glass-light mt-7 w-full sm:w-auto">
               Call the emergency desk
               <ArrowRight className="h-4 w-4" />
             </a>
+          </div>
+
+          <nav aria-label="Footer">
+            <p className="text-xs font-medium tracking-[0.22em] text-primary-foreground/55 uppercase">
+              Explore
+            </p>
+            <ul className="mt-5 space-y-3 text-sm">
+              {footerLinks.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    to={l.to}
+                    {...(l.hash ? { hash: l.hash } : {})}
+                    className="group inline-flex items-center gap-2 text-primary-foreground/75 transition-colors duration-300 hover:text-primary-foreground"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div>
+            <p className="text-xs font-medium tracking-[0.22em] text-primary-foreground/55 uppercase">
+              Reach us
+            </p>
+            <div className="mt-5 space-y-3 text-sm text-primary-foreground/80">
+              <a
+                href="tel:+302111234737"
+                className="flex items-center gap-3 transition-colors duration-300 hover:text-primary-foreground"
+              >
+                <Phone className="h-4 w-4 shrink-0" /> +30-21-1234-7377
+              </a>
+              <a
+                href="mailto:care@lifewellathens.gr"
+                className="flex items-center gap-3 transition-colors duration-300 hover:text-primary-foreground"
+              >
+                <Mail className="h-4 w-4 shrink-0" /> care@lifewellathens.gr
+              </a>
+              <p className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 shrink-0" /> Athens, Greece
+              </p>
+              <p className="flex items-center gap-3">
+                <Clock className="h-4 w-4 shrink-0" /> Emergency open 24/7
+              </p>
+            </div>
           </div>
         </div>
         <p className="mt-14 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/55">

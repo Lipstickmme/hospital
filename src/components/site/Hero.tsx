@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import { images } from "@/data/images";
 
@@ -9,23 +10,26 @@ const slides = [
     title: "We Take Care Of Your Healthy Health",
     body: "We collaborate with national health programmes covering communicable and non-communicable diseases, injury prevention, health promotion, mental health and health systems development.",
     cta: "See All Services",
+    to: "/services",
     image: images.heroOne,
   },
   {
-    eyebrow: "We Educate Our Staffs",
-    title: "Expert Care, Taught And Shared",
-    body: "We provide education for both you and your caregiver — how to safely assist at home with exercise, positioning, transfer techniques and general mobility.",
-    cta: "Learn More",
+    eyebrow: "Theatres That Never Close",
+    title: "Consultant-Led Surgery, Around The Clock",
+    body: "Four laminar-flow theatres run elective and emergency lists with a consultant surgeon and anaesthetist at every one — from the pre-assessment clinic through to your follow-up.",
+    cta: "Explore Surgery",
+    to: "/services",
     image: images.heroTwo,
   },
   {
-    eyebrow: "Every Milestone Matters",
-    title: "Compassion From Day One",
-    body: "From paediatrics to occupational health, our teams keep families well at every stage of life with modern diagnostics and 24/7 availability.",
-    cta: "Explore Our Care",
+    eyebrow: "Answers The Same Day",
+    title: "Imaging Read Here, Not Somewhere Else",
+    body: "MRI, CT, ultrasound and digital radiography reported on site by our own consultant radiologists, so an urgent scan becomes an answer today rather than an appointment next week.",
+    cta: "See Diagnostics",
+    to: "/services",
     image: images.heroThree,
   },
-];
+] as const;
 
 export function Hero() {
   const [index, setIndex] = useState(0);
@@ -72,13 +76,13 @@ export function Hero() {
                 </h1>
                 <p className="mt-5 text-sm leading-relaxed text-white/80 sm:text-base">{s.body}</p>
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <a href="#services" className="btn-glass">
+                  <Link to={s.to} className="btn-glass">
                     {s.cta}
                     <ArrowRight className="h-4 w-4" />
-                  </a>
-                  <a href="#contact" className="btn-glass-light">
+                  </Link>
+                  <Link to="/contact" hash="enquiry" className="btn-glass-light">
                     Book a visit
-                  </a>
+                  </Link>
                 </div>
               </div>
             ))}

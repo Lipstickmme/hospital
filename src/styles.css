@@ -373,6 +373,20 @@
   animation: marquee 32s linear infinite;
 }
 
+@keyframes hero-drift {
+  from {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+/* Very slow push on a banner photograph, so a static page still breathes. */
+@utility hero-drift {
+  animation: hero-drift 24s ease-in-out infinite alternate;
+}
+
 @keyframes float-soft {
   0%,
   100% {
@@ -400,6 +414,26 @@
     box-shadow:
       inset 0 1px 0 color-mix(in oklab, white 50%, transparent),
       0 18px 40px -18px color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+}
+
+/* Cards that tip towards the pointer. The rotation itself is written inline by
+   TiltCard on each frame; this supplies the easing for the return to rest and
+   keeps the card on its own compositor layer so the tilt never repaints the
+   page behind it. */
+@utility tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition:
+    transform 0.6s var(--ease-out-soft),
+    box-shadow 0.6s var(--ease-out-soft),
+    border-color 0.4s ease;
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+      0 26px 55px -22px color-mix(in oklab, var(--primary) 50%, transparent);
   }
 }
 
