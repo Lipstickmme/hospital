@@ -12,13 +12,7 @@ import {
 } from "lucide-react";
 
 import { Reveal } from "./Reveal";
-import stethoscope from "@/assets/stethoscope.jpg";
-import monitors from "@/assets/monitors.jpg";
-import experts from "@/assets/experts.jpg";
-import svcImmediate from "@/assets/svc-immediate.jpg";
-import svcDiagnostic from "@/assets/svc-diagnostic.jpg";
-import svcOccupational from "@/assets/svc-occupational.jpg";
-import svcPediatric from "@/assets/svc-pediatric.jpg";
+import { images } from "@/data/images";
 
 const quickLinks = [
   { label: "Learn More", icon: CalendarDays },
@@ -33,7 +27,7 @@ export function SafeToComeIn() {
       <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] lg:items-center">
         <Reveal>
           <img
-            src={stethoscope}
+            src={images.safeToComeIn}
             alt="Doctor holding a stethoscope"
             width={1024}
             height={1280}
@@ -123,7 +117,7 @@ export function ChooseBest() {
           </div>
         </div>
         <img
-          src={monitors}
+          src={images.chooseBest}
           alt="Surgeon reviewing medical imaging"
           width={1280}
           height={960}
@@ -147,7 +141,7 @@ export function TrustedExperts() {
       <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
         <Reveal>
           <img
-            src={experts}
+            src={images.trustedExperts}
             alt="Two doctors reviewing patient charts"
             width={1280}
             height={960}
@@ -226,22 +220,22 @@ const services = [
   {
     title: "Immediate Care",
     body: "Effective and affordable treatment for non-life threatening illnesses",
-    image: svcImmediate,
+    image: images.serviceImmediate,
   },
   {
     title: "Diagnostic Center",
     body: "A wide array of reliable lab and diagnostic imaging services",
-    image: svcDiagnostic,
+    image: images.serviceDiagnostic,
   },
   {
     title: "Occupational Health",
     body: "Our team keeps people well at work, physically and mentally",
-    image: svcOccupational,
+    image: images.serviceOccupational,
   },
   {
     title: "Pediatric Services",
     body: "Helping you and your child stay healthy through every milestone",
-    image: svcPediatric,
+    image: images.servicePediatric,
   },
 ];
 

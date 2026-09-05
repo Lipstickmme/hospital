@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
-import corridor from "@/assets/hero-corridor.jpg";
-import monitors from "@/assets/monitors.jpg";
-import pediatric from "@/assets/svc-pediatric.jpg";
+import { images } from "@/data/images";
 
 const slides = [
   {
@@ -11,21 +9,21 @@ const slides = [
     title: "We Take Care Of Your Healthy Health",
     body: "We collaborate with national health programmes covering communicable and non-communicable diseases, injury prevention, health promotion, mental health and health systems development.",
     cta: "See All Services",
-    image: corridor,
+    image: images.heroOne,
   },
   {
     eyebrow: "We Educate Our Staffs",
     title: "Expert Care, Taught And Shared",
     body: "We provide education for both you and your caregiver — how to safely assist at home with exercise, positioning, transfer techniques and general mobility.",
     cta: "Learn More",
-    image: monitors,
+    image: images.heroTwo,
   },
   {
     eyebrow: "Every Milestone Matters",
     title: "Compassion From Day One",
     body: "From paediatrics to occupational health, our teams keep families well at every stage of life with modern diagnostics and 24/7 availability.",
     cta: "Explore Our Care",
-    image: pediatric,
+    image: images.heroThree,
   },
 ];
 
