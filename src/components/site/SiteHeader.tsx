@@ -5,7 +5,6 @@ const links = [
   { label: "Home", href: "#home" },
   { label: "About Us", href: "#about" },
   { label: "Services & Specialties", href: "#services" },
-  { label: "Medical Flight", href: "#flight" },
   { label: "Contact Us", href: "#contact" },
 ];
 

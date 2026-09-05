@@ -19,10 +19,6 @@ import svcImmediate from "@/assets/svc-immediate.jpg";
 import svcDiagnostic from "@/assets/svc-diagnostic.jpg";
 import svcOccupational from "@/assets/svc-occupational.jpg";
 import svcPediatric from "@/assets/svc-pediatric.jpg";
-import doc1 from "@/assets/doc-1.jpg";
-import doc2 from "@/assets/doc-2.jpg";
-import doc3 from "@/assets/doc-3.jpg";
-import doc4 from "@/assets/doc-4.jpg";
 
 const quickLinks = [
   { label: "Learn More", icon: CalendarDays },
@@ -197,55 +193,12 @@ export function TrustedExperts() {
   );
 }
 
-const doctors = [
-  { name: "Dr. Nadim Kamal", role: "Associate Eye", image: doc1 },
-  { name: "Dr. Zinia Zara", role: "Neurology", image: doc2 },
-  { name: "Dr. Mark Willy", role: "Cardiology", image: doc3 },
-  { name: "Dr. Tina Rahman", role: "MBBS, M.D of Medicine", image: doc4 },
-];
-
-export function Doctors() {
-  return (
-    <section id="flight" className="bg-secondary/60 py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <Reveal>
-          <p className="text-xs font-medium tracking-[0.22em] text-primary uppercase">
-            Meet our team
-          </p>
-          <h2 className="mt-3 text-3xl sm:text-4xl">Specialist Doctors</h2>
-        </Reveal>
-
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-          {doctors.map((d, i) => (
-            <Reveal key={d.name} delay={i * 90}>
-              <article className="glass group h-full overflow-hidden rounded-4xl p-3">
-                <img
-                  src={d.image}
-                  alt={d.name}
-                  width={640}
-                  height={640}
-                  loading="lazy"
-                  className="aspect-square w-full rounded-3xl object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                />
-                <div className="px-2 py-4">
-                  <h3 className="truncate text-base sm:text-lg">{d.name}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{d.role}</p>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function CtaBand() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
       <Reveal>
         <div
-          className="relative overflow-hidden rounded-4xl px-6 py-12 text-primary-foreground sm:px-12 sm:py-16"
+          className="gradient-drift relative overflow-hidden rounded-4xl px-6 py-12 text-primary-foreground sm:px-12 sm:py-16"
           style={{ background: "var(--gradient-primary)" }}
         >
           <HeartPulse className="float-soft absolute -right-6 -bottom-6 h-40 w-40 text-primary-foreground/15" />
@@ -313,7 +266,7 @@ export function Services() {
         {services.map((s, i) => (
           <Reveal key={s.title} delay={i * 110}>
             <div className="group relative text-center">
-              <div className="glass mx-auto aspect-square w-full max-w-[13rem] overflow-hidden rounded-full p-2 transition-transform duration-500 ease-out group-hover:-translate-y-2">
+              <div className="glass hover-lift mx-auto aspect-square w-full max-w-[13rem] overflow-hidden rounded-full p-2">
                 <img
                   src={s.image}
                   alt={s.title}

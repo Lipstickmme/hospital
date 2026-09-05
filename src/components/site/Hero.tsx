@@ -24,7 +24,7 @@ const slides = [
     eyebrow: "Every Milestone Matters",
     title: "Compassion From Day One",
     body: "From paediatrics to occupational health, our teams keep families well at every stage of life with modern diagnostics and 24/7 availability.",
-    cta: "Meet Our Doctors",
+    cta: "Explore Our Care",
     image: pediatric,
   },
 ];

@@ -6,7 +6,6 @@ import {
   SafeToComeIn,
   ChooseBest,
   TrustedExperts,
-  Doctors,
   CtaBand,
   Services,
   Marquee,
@@ -44,7 +43,6 @@ function Index() {
         <SafeToComeIn />
         <ChooseBest />
         <TrustedExperts />
-        <Doctors />
         <CtaBand />
         <Services />
         <Marquee />

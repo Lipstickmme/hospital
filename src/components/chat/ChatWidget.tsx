@@ -216,7 +216,7 @@ export function ChatWidget() {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label={open ? "Close live chat" : "Open live chat"}
-        className="grid size-14 place-items-center rounded-full text-primary-foreground shadow-xl transition-transform hover:scale-105 active:scale-95"
+        className="pulse-ring grid size-14 place-items-center rounded-full text-primary-foreground shadow-xl transition-transform duration-300 hover:scale-110 active:scale-95"
         style={{ background: "var(--gradient-primary)" }}
       >
         {open ? <X className="size-6" /> : <MessageCircle className="size-6" />}
