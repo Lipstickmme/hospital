@@ -25,7 +25,7 @@ export const Route = createFileRoute("/services")({
       {
         name: "description",
         content:
-          "Immediate care, diagnostic imaging, surgery, occupational health, maternity, paediatrics and cardiology — consultant-led, in one building in Athens.",
+          "Immediate care, diagnostic imaging, surgery, occupational health, maternity, paediatrics and cardiology, all consultant-led, in one building in Athens.",
       },
       { property: "og:title", content: "Services & Specialties | Lifewell Medical Center Athens" },
       {
@@ -78,7 +78,7 @@ function ServicesPage() {
         >
           <p>
             Imaging, theatres, maternity and the emergency department are minutes apart from each
-            other — which is the difference between an answer today and an answer next week.
+            other, which is the difference between an answer today and an answer next week.
           </p>
         </PageHero>
 

@@ -36,7 +36,7 @@ export const Route = createFileRoute("/contact")({
       {
         property: "og:description",
         content:
-          "Emergency desk open 24/7, outpatient enquiries Mon–Sat. Send a message and a real person replies.",
+          "Emergency desk open 24/7, outpatient enquiries Mon-Sat. Send a message and a real person replies.",
       },
     ],
   }),
@@ -68,7 +68,7 @@ const channels = [
   {
     icon: Clock,
     title: "Opening hours",
-    lines: ["Emergency — always open", "Clinics Mon–Sat, 08:00–20:00"],
+    lines: ["Emergency, always open", "Clinics Mon-Sat, 08:00-20:00"],
     href: "#enquiry",
     action: "Send a message",
   },
@@ -112,7 +112,7 @@ const faqs = [
   },
   {
     q: "How quickly will somebody reply to this form?",
-    a: "It reaches the care team's dashboard immediately and is usually answered the same working day. If it is urgent, please call the desk instead — the form is not monitored overnight.",
+    a: "It reaches the care team's dashboard immediately and is usually answered the same working day. If it is urgent, please call the desk instead, because the form is not monitored overnight.",
   },
   {
     q: "Can I get my results sent to my own doctor?",
@@ -203,7 +203,7 @@ function ContactPage() {
                     >
                       <Check className="h-6 w-6" />
                     </span>
-                    <h2 className="mt-6 text-2xl">Thank you — that has reached the care team.</h2>
+                    <h2 className="mt-6 text-2xl">Thank you, that has reached the care team.</h2>
                     <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
                       We have emailed you a confirmation. If you would rather not wait, open the chat
                       in the bottom-right corner and somebody will pick it up live.

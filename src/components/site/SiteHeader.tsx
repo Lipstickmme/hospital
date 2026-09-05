@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 
-import { images } from "@/data/images";
+import { BrandMark } from "./BrandMark";
 
 // Every page now has its own route, so these are real links rather than the
 // hash anchors the one-page version used.
@@ -10,6 +10,7 @@ const links = [
   { label: "Home", to: "/" },
   { label: "About Us", to: "/about" },
   { label: "Services", to: "/services" },
+  { label: "Medical Flight", to: "/medical-flight" },
   { label: "Contact Us", to: "/contact" },
 ] as const;
 
@@ -40,26 +41,7 @@ export function SiteHeader() {
         }`}
       >
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:flex lg:justify-between">
-          <Link to="/" className="group flex min-w-0 items-center gap-3">
-            {/* The mark is blue on transparent, so it needs a light tile of its
-                own to stay legible while the header is over a dark banner. */}
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/90 shadow-[var(--shadow-soft)] ring-1 ring-white/60 transition-transform duration-500 group-hover:scale-105">
-              <img
-                src={images.logo}
-                alt=""
-                width={44}
-                height={44}
-                className="h-7 w-7 object-contain"
-              />
-            </span>
-            <span
-              className={`min-w-0 text-sm leading-tight font-semibold tracking-tight transition-colors duration-500 ${
-                onDark ? "text-primary-foreground drop-shadow-sm" : "text-foreground"
-              }`}
-            >
-              Lifewell Medical Center Athens
-            </span>
-          </Link>
+          <BrandMark onDark={onDark} />
 
           <nav className="hidden items-center gap-1 lg:flex">
             {links.map((l) => {
@@ -68,7 +50,7 @@ export function SiteHeader() {
                 <Link
                   key={l.label}
                   to={l.to}
-                  className={`rounded-full px-3 py-2 text-sm transition-colors ${
+                  className={`rounded-full px-3 py-2 text-sm whitespace-nowrap transition-colors ${
                     onDark
                       ? active
                         ? "bg-primary-foreground/20 text-primary-foreground"
@@ -102,7 +84,7 @@ export function SiteHeader() {
 
         <div
           className={`overflow-hidden rounded-b-3xl bg-background/95 transition-[max-height,opacity] duration-500 lg:hidden ${
-            open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            open ? "max-h-[30rem] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <nav className="flex flex-col gap-1 border-t border-border/60 px-4 py-4">

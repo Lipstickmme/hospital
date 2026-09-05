@@ -33,7 +33,7 @@ export const services: Service[] = [
     slug: "immediate-care",
     title: "Immediate Care",
     summary: "Effective, affordable treatment for non-life-threatening illness",
-    body: "Walk in without an appointment for the things that cannot wait for a clinic slot but do not belong in a resuscitation bay — fevers, fractures, infections, cuts and sprains. A senior clinician sees every patient, and imaging and pathology are in the same building, so most people leave with an answer rather than a referral.",
+    body: "Walk in without an appointment for the things that cannot wait for a clinic slot but do not belong in a resuscitation bay: fevers, fractures, infections, cuts and sprains. A senior clinician sees every patient, and imaging and pathology are in the same building, so most people leave with an answer rather than a referral.",
     points: [
       "No appointment needed, 24 hours a day",
       "On-site X-ray, ultrasound and pathology",
@@ -57,7 +57,7 @@ export const services: Service[] = [
     ],
     image: images.specialtyImaging,
     icon: Scan,
-    hours: "Mon–Sat, 07:00–21:00 · urgent studies 24/7",
+    hours: "Mon-Sat, 07:00-21:00 · urgent studies 24/7",
   },
   {
     slug: "surgery",
@@ -72,13 +72,13 @@ export const services: Service[] = [
     ],
     image: images.specialtySurgery,
     icon: Activity,
-    hours: "Elective lists Mon–Fri · emergency theatre 24/7",
+    hours: "Elective lists Mon-Fri · emergency theatre 24/7",
   },
   {
     slug: "occupational-health",
     title: "Occupational Health",
     summary: "Keeping people well at work, physically and mentally",
-    body: "Pre-employment screening, statutory medicals, vaccination programmes and return-to-work assessments for employers across Attica, alongside confidential support for the people who work for them. We report on fitness to work — never on clinical detail.",
+    body: "Pre-employment screening, statutory medicals, vaccination programmes and return-to-work assessments for employers across Attica, alongside confidential support for the people who work for them. We report on fitness to work, never on clinical detail.",
     points: [
       "Pre-employment and periodic health screening",
       "Statutory medicals and vaccination programmes",
@@ -87,13 +87,13 @@ export const services: Service[] = [
     ],
     image: images.serviceOccupational,
     icon: Stethoscope,
-    hours: "Mon–Fri, 08:00–18:00",
+    hours: "Mon-Fri, 08:00-18:00",
   },
   {
     slug: "maternity-paediatrics",
     title: "Maternity & Paediatrics",
     summary: "Helping you and your child stay healthy through every milestone",
-    body: "Antenatal care, a midwife-led birthing suite with obstetric and neonatal cover on site, and paediatric clinics that carry on long after you go home — immunisations, development checks, allergy and asthma care, and a paediatrician on call around the clock.",
+    body: "Antenatal care, a midwife-led birthing suite with obstetric and neonatal cover on site, and paediatric clinics that carry on long after you go home: immunisations, development checks, allergy and asthma care, and a paediatrician on call around the clock.",
     points: [
       "Antenatal, birth and postnatal care in one place",
       "Midwife-led suite with obstetric cover on site",
@@ -102,7 +102,7 @@ export const services: Service[] = [
     ],
     image: images.specialtyMaternity,
     icon: Baby,
-    hours: "Maternity 24/7 · paediatric clinics Mon–Sat",
+    hours: "Maternity 24/7 · paediatric clinics Mon-Sat",
   },
   {
     slug: "cardiology",
@@ -117,7 +117,7 @@ export const services: Service[] = [
     ],
     image: images.specialtyCardiology,
     icon: HeartPulse,
-    hours: "Mon–Fri, 08:00–20:00 · urgent same-day",
+    hours: "Mon-Fri, 08:00-20:00 · urgent same-day",
   },
 ];
 

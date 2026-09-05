@@ -7,7 +7,7 @@ import { images } from "@/data/images";
 const slides = [
   {
     eyebrow: "We Are Ready To Serve You",
-    title: "We Take Care Of Your Healthy Health",
+    title: "We Take Care Of Your Health",
     body: "We collaborate with national health programmes covering communicable and non-communicable diseases, injury prevention, health promotion, mental health and health systems development.",
     cta: "See All Services",
     to: "/services",
@@ -16,7 +16,7 @@ const slides = [
   {
     eyebrow: "Theatres That Never Close",
     title: "Consultant-Led Surgery, Around The Clock",
-    body: "Four laminar-flow theatres run elective and emergency lists with a consultant surgeon and anaesthetist at every one — from the pre-assessment clinic through to your follow-up.",
+    body: "Four laminar-flow theatres run elective and emergency lists with a consultant surgeon and anaesthetist at every one, from the pre-assessment clinic through to your follow-up.",
     cta: "Explore Surgery",
     to: "/services",
     image: images.heroTwo,

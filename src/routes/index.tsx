@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Lifewell Medical Center Athens offers immediate care, diagnostics, occupational health, paediatrics and specialist doctors — open 24/7 in Athens.",
+          "Lifewell Medical Center Athens offers immediate care, diagnostics, occupational health, paediatrics and specialist doctors, open 24/7 in Athens.",
       },
       { property: "og:title", content: "Lifewell Medical Center Athens | Modern Healthcare" },
       {

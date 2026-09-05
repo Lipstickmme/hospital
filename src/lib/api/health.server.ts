@@ -94,7 +94,7 @@ export async function handleHealthCheck(request: Request): Promise<Response> {
         supabaseAnonKey: Boolean(anonKey),
         supabaseServiceRoleKey: Boolean(serviceRoleKey),
         browserConfig:
-          "served at runtime from these same values — no rebuild needed after a change",
+          "served at runtime from these same values, no rebuild needed after a change",
         resendApiKey: Boolean(resendKey),
         resendKeyCanReadInbound: resendKeyCanRead ?? "not checked. Add ?probe=1 to test it",
         inboundEmail: inboundReady ? "configured" : "not configured (optional)",

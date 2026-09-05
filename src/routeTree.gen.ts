@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as MedicalFlightRouteImport } from './routes/medical-flight'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
@@ -43,6 +44,11 @@ const AuthRoute = AuthRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicalFlightRoute = MedicalFlightRouteImport.update({
+  id: '/medical-flight',
+  path: '/medical-flight',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRoute = ServicesRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/medical-flight': typeof MedicalFlightRoute
   '/services': typeof ServicesRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/chat': typeof AdminChatRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/medical-flight': typeof MedicalFlightRoute
   '/services': typeof ServicesRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/chat': typeof AdminChatRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/medical-flight': typeof MedicalFlightRoute
   '/services': typeof ServicesRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/chat': typeof AdminChatRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/contact'
+    | '/medical-flight'
     | '/services'
     | '/admin/bookings'
     | '/admin/chat'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/medical-flight'
     | '/services'
     | '/admin/bookings'
     | '/admin/chat'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/contact'
+    | '/medical-flight'
     | '/services'
     | '/admin/bookings'
     | '/admin/chat'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  MedicalFlightRoute: typeof MedicalFlightRoute
   ServicesRoute: typeof ServicesRoute
 }
 
@@ -189,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medical-flight': {
+      id: '/medical-flight'
+      path: '/medical-flight'
+      fullPath: '/medical-flight'
+      preLoaderRoute: typeof MedicalFlightRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -251,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  MedicalFlightRoute: MedicalFlightRoute,
   ServicesRoute: ServicesRoute,
 }
 export const routeTree = rootRouteImport

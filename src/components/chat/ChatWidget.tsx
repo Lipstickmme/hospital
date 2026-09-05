@@ -102,7 +102,7 @@ export function ChatWidget() {
               <p className="text-muted-foreground">
                 The server did not supply Supabase configuration, so the chat cannot connect. Set{" "}
                 <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> on the deployment and
-                reload — no rebuild needed. <code>/api/health</code> reports what it can see.
+                reload, no rebuild needed. <code>/api/health</code> reports what it can see.
               </p>
             </div>
           ) : sessionId ? (

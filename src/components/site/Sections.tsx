@@ -14,6 +14,7 @@ import {
 
 import { Reveal } from "./Reveal";
 import { TiltCard } from "./TiltCard";
+import { BrandMark } from "./BrandMark";
 import { images } from "@/data/images";
 import { featuredServices } from "@/data/services";
 
@@ -48,7 +49,7 @@ export function SafeToComeIn() {
             among the safest places in healthcare today.
           </p>
           <p className="mt-4 text-sm leading-relaxed font-medium text-foreground sm:text-base">
-            You should feel confident we&apos;re keeping your family — and our caregivers — safe.
+            You should feel confident we&apos;re keeping your family, and our caregivers, safe.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
             No matter what brings you in, we take steps every single day to keep you safe during
@@ -89,21 +90,21 @@ const promises = [
 export function ChooseBest() {
   return (
     <section className="relative overflow-hidden">
-      <div className="grid lg:grid-cols-2">
+      <div className="grid lg:grid-cols-2 lg:items-stretch">
         <div
-          className="relative px-4 py-16 text-primary-foreground sm:px-10 sm:py-24 lg:px-14"
+          className="relative flex flex-col justify-center px-4 py-16 text-primary-foreground sm:px-10 sm:py-24 lg:px-14"
           style={{ background: "var(--gradient-primary)" }}
         >
-          <div className="ml-auto max-w-xl">
+          <div className="ml-auto w-full max-w-xl">
             <Reveal>
               <h2 className="text-3xl sm:text-4xl">Choose The Best For Your Health</h2>
               <p className="mt-6 text-sm leading-relaxed text-primary-foreground/85 sm:text-base">
-                <strong className="font-semibold">Quality &amp; Safety</strong> — we ensure the
+                <strong className="font-semibold">Quality &amp; Safety.</strong> We ensure the
                 highest standards and excellent outcomes through effective interactions,
                 decision-making and actions.
               </p>
               <p className="mt-4 text-sm leading-relaxed text-primary-foreground/85 sm:text-base">
-                <strong className="font-semibold">Empathy</strong> — we imagine what another person
+                <strong className="font-semibold">Empathy.</strong> We imagine what another person
                 is going through, work to alleviate suffering, and create joy whenever possible.
               </p>
             </Reveal>
@@ -119,23 +120,25 @@ export function ChooseBest() {
             </ul>
           </div>
         </div>
-        <img
-          src={images.chooseBest}
-          alt="Three nurses walking together through a hospital corridor"
-          width={1280}
-          height={960}
-          loading="lazy"
-          className="h-72 w-full object-cover sm:h-96 lg:h-auto"
-        />
+        <div className="relative min-h-72 sm:min-h-96 lg:min-h-full">
+          <img
+            src={images.chooseBest}
+            alt="Three nurses walking together through a hospital corridor"
+            width={1280}
+            height={960}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
       </div>
     </section>
   );
 }
 
 const stats = [
-  { label: "Efficiency", value: 80 },
-  { label: "Experience", value: 90 },
-  { label: "Patient care", value: 70 },
+  { label: "Efficiency", value: 100 },
+  { label: "Experience", value: 100 },
+  { label: "Patient care", value: 100 },
 ];
 
 export function TrustedExperts() {
@@ -157,11 +160,11 @@ export function TrustedExperts() {
             We are the trusted experts who keep <span className="text-gradient">things simple</span>
           </h2>
           <p className="mt-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            <strong className="font-medium text-foreground">Inclusion</strong> — we intentionally
+            <strong className="font-medium text-foreground">Inclusion.</strong> We intentionally
             create an environment of compassionate belonging where all are valued and respected.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            <strong className="font-medium text-foreground">Integrity</strong> — we adhere to high
+            <strong className="font-medium text-foreground">Integrity.</strong> We adhere to high
             moral principles and professional standards through honesty, confidentiality, trust,
             respect and transparency.
           </p>
@@ -205,7 +208,7 @@ export function CtaBand() {
                 Need a doctor for check-up?
               </p>
               <h2 className="mt-3 text-2xl sm:text-4xl">
-                Send us a message now — we are ready to serve
+                Send us a message now, we are ready to serve
               </h2>
             </div>
             <Link to="/contact" hash="enquiry" className="btn-glass-light shrink-0 px-8 py-4">
@@ -299,11 +302,15 @@ export function Marquee() {
   );
 }
 
-const footerLinks: { label: string; to: "/" | "/about" | "/services" | "/contact"; hash?: string }[] =
-  [
+const footerLinks: {
+  label: string;
+  to: "/" | "/about" | "/services" | "/medical-flight" | "/contact";
+  hash?: string;
+}[] = [
     { label: "Home", to: "/" },
     { label: "About us", to: "/about" },
     { label: "Services", to: "/services" },
+    { label: "Medical flight", to: "/medical-flight" },
     { label: "Contact us", to: "/contact" },
     { label: "Book an appointment", to: "/contact", hash: "enquiry" },
     { label: "Emergency care", to: "/services", hash: "immediate-care" },
@@ -315,20 +322,9 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
-            <Link to="/" className="group flex items-center gap-3">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/90 ring-1 ring-white/60 transition-transform duration-500 group-hover:scale-105">
-                <img
-                  src={images.logo}
-                  alt=""
-                  width={44}
-                  height={44}
-                  className="h-7 w-7 object-contain"
-                />
-              </span>
-              <h3 className="text-lg">Lifewell Medical Center Athens</h3>
-            </Link>
+            <BrandMark onDark />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
-              Modern, compassionate healthcare for every stage of life — emergency care,
+              Modern, compassionate healthcare for every stage of life: emergency care,
               diagnostics, surgery, maternity and paediatrics, all in one building in Athens.
             </p>
             <a href="tel:+302111234737" className="btn-glass-light mt-7 w-full sm:w-auto">

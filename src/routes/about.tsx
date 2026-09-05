@@ -26,7 +26,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Who we are, what we believe and how we work — the people, values and standards behind Lifewell Medical Center Athens.",
+          "Who we are, what we believe and how we work: the people, values and standards behind Lifewell Medical Center Athens.",
       },
       { property: "og:title", content: "About Lifewell Medical Center Athens" },
       {
@@ -103,7 +103,7 @@ const timeline = [
   {
     year: "Today",
     title: "Care that keeps up",
-    body: "MRI, rapid-access cardiology, occupational health and paediatrics — with a live chat and contact desk answered by real staff, not a script.",
+    body: "MRI, rapid-access cardiology, occupational health and paediatrics, with a live chat and contact desk answered by real staff, not a script.",
   },
 ];
 
@@ -150,7 +150,7 @@ function AboutPage() {
         >
           <p>
             Lifewell began as four doctors and one X-ray room. It is now a consultant-led hospital
-            with a 24-hour emergency department — and it is still run on the idea that the person in
+            with a 24-hour emergency department, and it is still run on the idea that the person in
             front of you matters more than the process around them.
           </p>
         </PageHero>
@@ -191,7 +191,7 @@ function AboutPage() {
                 <div className="glass float-soft absolute -right-2 -bottom-6 max-w-[15rem] rounded-3xl p-5 sm:right-6">
                   <p className="text-sm font-semibold">Consultant-led, always</p>
                   <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-                    A senior clinician sees every patient who is admitted — including at three in the
+                    A senior clinician sees every patient who is admitted, including at three in the
                     morning.
                   </p>
                 </div>
@@ -212,7 +212,7 @@ function AboutPage() {
                 <p>
                   Athens does not lack hospitals. What it lacked, when we started, was somewhere that
                   would treat an anxious parent at midnight with the same seriousness as a scheduled
-                  operation — and then tell them plainly what happens next.
+                  operation, and then tell them plainly what happens next.
                 </p>
                 <p>
                   That is still the whole of our strategy. Modern equipment matters, and we buy it.
@@ -374,7 +374,7 @@ function AboutPage() {
             </span>
             <span className="glass flex items-center gap-3 rounded-full px-6 py-3">
               <Users className="h-4 w-4 text-primary" />
-              Outpatient clinics, Mon–Sat 08:00–20:00
+              Outpatient clinics, Mon-Sat 08:00-20:00
             </span>
           </div>
         </section>

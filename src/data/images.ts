@@ -51,7 +51,13 @@ export const images = {
   aboutCare: lwNurse,
   aboutTheatre: lwTheatre,
 
-  /** Services page — one per specialty in the full catalogue. */
+  /** Medical flight page. */
+  flightBanner: lwTeam,
+  flightCrew: lwDoctor,
+  flightMonitoring: lwBloodPressure,
+  flightNeonatal: lwNewborn,
+
+  /** Services page: one per specialty in the full catalogue. */
   specialtyEmergency: lwDoctor,
   specialtySurgery: lwTheatre,
   specialtyImaging: lwImaging,
