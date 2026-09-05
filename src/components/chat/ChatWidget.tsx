@@ -2,8 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useRouterState } from "@tanstack/react-router";
 
-import { supabase } from "@/integrations/supabase/client";
-import { isBackendConfigured } from "@/lib/backend";
+import { isSupabaseConfigured } from "@/lib/supabase";
 import { useVisitorChat } from "@/hooks/useVisitorChat";
 
 function Bubble({ sender, body }: { sender: "visitor" | "agent"; body: string }) {
@@ -22,37 +21,24 @@ function Bubble({ sender, body }: { sender: "visitor" | "agent"; body: string })
 }
 
 /**
- * Live chat, bottom-right of every public page. Hidden entirely when the
- * backend is not configured, and on the admin side, where staff answer these
- * conversations rather than start them.
+ * Live chat, bottom-right of every public page.
+ *
+ * The only thing that hides it is the path. It deliberately renders even with
+ * no Supabase configuration, saying so when opened, because a widget that
+ * returns null on a misconfigured build is indistinguishable from one that was
+ * never deployed — which is a slow thing to diagnose from the outside.
+ *
+ * Hidden on /admin and /auth, where staff answer these conversations rather
+ * than start them. Deliberately not hidden based on who is signed in: keying
+ * off the session meant a staff member who had logged into the dashboard lost
+ * the widget everywhere, with nothing on screen to explain why.
  */
 export function ChatWidget() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
-  const [isStaff, setIsStaff] = useState(false);
   const [draft, setDraft] = useState("");
   const threadRef = useRef<HTMLOListElement>(null);
   const { sessionId, messages, status, error, start, send } = useVisitorChat();
-
-  // A signed-in, non-anonymous user is staff; they get the dashboard, not this.
-  useEffect(() => {
-    if (!isBackendConfigured) return;
-    let cancelled = false;
-    void supabase.auth.getUser().then(({ data }) => {
-      if (!cancelled) setIsStaff(Boolean(data.user) && !data.user?.is_anonymous);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) {
-        setIsStaff(false);
-        return;
-      }
-      setIsStaff(!session.user.is_anonymous);
-    });
-    return () => {
-      cancelled = true;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
 
   // Keep the newest message in view.
   useEffect(() => {
@@ -60,8 +46,7 @@ export function ChatWidget() {
     if (thread) thread.scrollTop = thread.scrollHeight;
   }, [messages, open]);
 
-  if (!isBackendConfigured) return null;
-  if (isStaff || pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
   const openConversation = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -111,7 +96,16 @@ export function ChatWidget() {
             </button>
           </header>
 
-          {sessionId ? (
+          {!isSupabaseConfigured ? (
+            <div className="flex flex-1 flex-col justify-center gap-2 p-5 text-sm">
+              <p className="font-semibold">Chat is unavailable</p>
+              <p className="text-muted-foreground">
+                This build shipped without Supabase configuration, so the chat cannot connect. Check{" "}
+                <code>browserBundleConfigured</code> at <code>/api/health</code>, then redeploy —
+                the browser bundle is built once, so setting the variables alone does not fix it.
+              </p>
+            </div>
+          ) : sessionId ? (
             <>
               <ol ref={threadRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
                 {messages.map((message) => (
@@ -124,6 +118,12 @@ export function ChatWidget() {
                   </li>
                 )}
               </ol>
+
+              {error && (
+                <p role="alert" className="px-4 pb-2 text-xs text-destructive">
+                  {error}
+                </p>
+              )}
 
               <form
                 onSubmit={sendFollowUp}
