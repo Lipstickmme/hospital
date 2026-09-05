@@ -37,7 +37,7 @@ export function useFormSubmit({ kind, extra }: Options) {
     setState("sending");
     setError(null);
 
-    if (!isSupabaseConfigured) {
+    if (!isSupabaseConfigured()) {
       window.setTimeout(() => setState("sent"), 900);
       return;
     }

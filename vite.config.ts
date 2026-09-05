@@ -54,16 +54,16 @@ for (const [target, sources] of CLIENT_ALIASES) {
   }
 }
 
-// A client bundle with no Supabase config compiles fine and then fails in the
-// browser on every page that talks to Supabase, which is a confusing way to
-// find out. Say so while the build log is still in front of you.
+// These are only a local-dev convenience now: the browser gets its config from
+// the server at runtime (src/lib/public-config.ts), so a build without them is
+// fine on a deployment. Worth a note for `bun run dev` without a .env.
 for (const [target, sources] of CLIENT_ALIASES) {
   if (!read(target)) {
     console.warn(
       `[env] ${target} is not set and none of its aliases were found ` +
-        `(${sources.join(", ")}). The browser bundle will have no Supabase ` +
-        `config, so the chat widget and admin dashboard will not work. ` +
-        `Set ${target}, or connect the Supabase integration in Vercel.`,
+        `(${sources.join(", ")}). Fine for a deployment — the server supplies ` +
+        `this at runtime — but local dev without a .env will have no Supabase ` +
+        `config.`,
     );
   }
 }

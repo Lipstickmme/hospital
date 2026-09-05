@@ -13,6 +13,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Toaster } from "@/components/ui/sonner";
+import { loadPublicConfig, setPublicConfig } from "@/lib/public-config";
 
 function NotFoundComponent() {
   return (
@@ -103,6 +104,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
   }),
 
+  // Runs server-side during SSR; the result is serialised into the payload, so
+  // the browser receives the Supabase config without a build-time variable and
+  // without an extra request.
+  loader: async () => await loadPublicConfig(),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -125,6 +131,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Set during render, before any child mounts, so the Supabase singleton is
+  // configured by the time an effect or handler first touches it.
+  setPublicConfig(Route.useLoaderData());
+
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const showChatWidget = !pathname.startsWith("/admin") && !pathname.startsWith("/auth");
 

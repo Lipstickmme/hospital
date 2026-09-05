@@ -26,14 +26,14 @@ function AdminLayout() {
   const { user, isAdmin, loading } = useAdminAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  if (!isSupabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return (
       <div className="grid min-h-screen place-items-center bg-secondary/40 px-6 text-center">
         <div className="glass max-w-md rounded-4xl p-8">
           <h1 className="text-xl font-semibold">Backend not configured</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_PUBLISHABLE_KEY</code>, then
-            reload.
+            Set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> on the deployment, then
+            reload. No rebuild needed.
           </p>
         </div>
       </div>

@@ -96,13 +96,13 @@ export function ChatWidget() {
             </button>
           </header>
 
-          {!isSupabaseConfigured ? (
+          {!isSupabaseConfigured() ? (
             <div className="flex flex-1 flex-col justify-center gap-2 p-5 text-sm">
               <p className="font-semibold">Chat is unavailable</p>
               <p className="text-muted-foreground">
-                This build shipped without Supabase configuration, so the chat cannot connect. Check{" "}
-                <code>browserBundleConfigured</code> at <code>/api/health</code>, then redeploy —
-                the browser bundle is built once, so setting the variables alone does not fix it.
+                The server did not supply Supabase configuration, so the chat cannot connect. Set{" "}
+                <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> on the deployment and
+                reload — no rebuild needed. <code>/api/health</code> reports what it can see.
               </p>
             </div>
           ) : sessionId ? (
