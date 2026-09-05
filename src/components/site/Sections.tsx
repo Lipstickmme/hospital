@@ -28,7 +28,7 @@ export function SafeToComeIn() {
         <Reveal>
           <img
             src={images.safeToComeIn}
-            alt="Doctor holding a stethoscope"
+            alt="Doctor smiling in a hospital corridor, colleagues behind"
             width={1024}
             height={1280}
             loading="lazy"
@@ -118,7 +118,7 @@ export function ChooseBest() {
         </div>
         <img
           src={images.chooseBest}
-          alt="Surgeon reviewing medical imaging"
+          alt="Three nurses walking together through a hospital corridor"
           width={1280}
           height={960}
           loading="lazy"
@@ -142,7 +142,7 @@ export function TrustedExperts() {
         <Reveal>
           <img
             src={images.trustedExperts}
-            alt="Two doctors reviewing patient charts"
+            alt="Two senior doctors in white coats"
             width={1280}
             height={960}
             loading="lazy"

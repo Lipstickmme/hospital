@@ -46,7 +46,7 @@ export function Hero() {
           width={1920}
           height={1088}
           loading={i === 0 ? "eager" : "lazy"}
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-[1400ms] ease-out ${
+          className={`absolute inset-0 h-full w-full object-cover object-center transition-all duration-[1400ms] ease-out sm:object-left ${
             i === index ? "scale-100 opacity-100" : "scale-105 opacity-0"
           }`}
         />
@@ -56,7 +56,7 @@ export function Hero() {
 
       <div className="relative mx-auto flex min-h-[92vh] max-w-7xl items-end px-4 pt-32 pb-14 sm:px-6 sm:items-center sm:pb-20">
         <div className="w-full max-w-xl">
-          <div className="glass rounded-4xl p-6 sm:p-10">
+          <div className="glass-panel rounded-4xl p-6 text-white sm:p-10">
             {slides.map((s, i) => (
               <div
                 key={s.title}
@@ -64,19 +64,19 @@ export function Hero() {
                   i === index ? "block opacity-100" : "hidden opacity-0"
                 }`}
               >
-                <p className="text-xs font-medium tracking-[0.22em] text-primary uppercase">
+                <p className="text-xs font-medium tracking-[0.22em] text-white/75 uppercase">
                   {s.eyebrow}
                 </p>
-                <h1 className="mt-4 text-3xl leading-[1.05] sm:text-5xl">{s.title}</h1>
-                <p className="mt-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  {s.body}
-                </p>
+                <h1 className="mt-4 text-3xl leading-[1.05] text-white drop-shadow-sm sm:text-5xl">
+                  {s.title}
+                </h1>
+                <p className="mt-5 text-sm leading-relaxed text-white/80 sm:text-base">{s.body}</p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <a href="#services" className="btn-glass">
                     {s.cta}
                     <ArrowRight className="h-4 w-4" />
                   </a>
-                  <a href="#contact" className="btn-glass-ghost">
+                  <a href="#contact" className="btn-glass-light">
                     Book a visit
                   </a>
                 </div>
@@ -91,7 +91,7 @@ export function Hero() {
                   aria-label={`Show slide ${i + 1}`}
                   onClick={() => setIndex(i)}
                   className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === index ? "w-10 bg-primary" : "w-4 bg-foreground/20"
+                    i === index ? "w-10 bg-white" : "w-4 bg-white/35 hover:bg-white/55"
                   }`}
                 />
               ))}
